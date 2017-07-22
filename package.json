@@ -1,11 +1,8 @@
 {
   "name": "2d-engine",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A game engine in two using D3 and writtin in ES6",
   "main": "src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/brandonheyer/2d-engine.git"
@@ -49,8 +46,5 @@
         }
       ]
     ]
-  },
-  "scripts": {
-    "preversion": "grunt"
   }
 }
