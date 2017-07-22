@@ -1,0 +1,55 @@
+{
+  "name": "2d-engine",
+  "version": "0.1.1",
+  "description": "A game engine in two using D3 and writtin in ES6",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/brandonheyer/2d-game-engine.git"
+  },
+  "keywords": [
+    "2d",
+    "game",
+    "engine",
+    "es6",
+    "babel",
+    "d3",
+    "visualization"
+  ],
+  "author": {
+    "name": "Brandon Heyer",
+    "email": "brandonheyer@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brandonheyer/2d-game-engine/issues"
+  },
+  "homepage": "https://github.com/brandonheyer/2d-game-engine#readme",
+  "dependencies": {
+    "d3": "^4.9.1",
+    "jquery": "^3.2.1",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babelify": "^7.3.0",
+    "grunt": "^1.0.1",
+    "grunt-browserify": "^5.0.0"
+  },
+  "browserify": {
+    "debug": true,
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015"
+          ]
+        }
+      ]
+    ]
+  }
+}
