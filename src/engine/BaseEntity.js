@@ -22,6 +22,13 @@ class BaseEntity {
   }
 
   /**
+   * Called when the entity is removed
+   */
+  destroy() {
+    this.element.remove();
+  }
+
+  /**
    * Create a starting point for the entity
    * Can be overridden in extending classes to add functionality
    */
@@ -49,7 +56,7 @@ class BaseEntity {
    * @param  {d3.selection} canvas The d3 selection of the engines main display canvas
    */
   render(canvas) {
-    return el;
+    this.element = undefined;
   }
 }
 

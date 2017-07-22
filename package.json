@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/brandonheyer/2d-game-engine.git"
+    "url": "git+ssh://git@github.com/brandonheyer/2d-engine.git"
   },
   "keywords": [
     "2d",
@@ -25,9 +25,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/brandonheyer/2d-game-engine/issues"
+    "url": "https://github.com/brandonheyer/2d-engine/issues"
   },
-  "homepage": "https://github.com/brandonheyer/2d-game-engine#readme",
+  "homepage": "https://github.com/brandonheyer/2d-engine#readme",
   "dependencies": {
     "d3": "^4.9.1"
   },

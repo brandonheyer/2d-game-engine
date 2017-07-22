@@ -1,6 +1,9 @@
 import * as d3 from 'd3';
 import Vector from './Vector';
 
+/**
+ * An engine is the workhorse for the 2d game engine
+ */
 class Engine {
   constructor(svgClass, pixelX, pixelY, worldX, worldY) {
     this.svg = d3.select(svgClass)
@@ -26,10 +29,16 @@ class Engine {
     this.last = undefined;
   }
 
+  /**
+   * Add an entity to the engine
+   */
   addEntity(entity) {
     this.entities.push(entity);
   }
 
+  /**
+   * Remove an entity from the engine
+   */
   removeEntity(entity) {
     var index = this.entities.indexOf(entity);
 
@@ -38,10 +47,18 @@ class Engine {
     }
   }
 
+  /**
+   * Remove the entity at the specific index
+   */
   removeEntityAt(index) {
+    this.entities[index].destroy();
     this.entities.splice(index, 1);
   }
 
+/**
+ * Preprocess the entity, this primarily makes sure the selection is up to
+ * date in cases where the entity has been removed and replaced with a new one
+ */
   preProcessEntity(d3Element, entity, index) {
     if (!entity.element || entity.element._groups[0][0] !== d3Element) {
       entity.element = d3.select(d3Element);
@@ -50,10 +67,16 @@ class Engine {
     this.processEntity(entity, index);
   }
 
+  /**
+   * Call update on the entity
+   */
   processEntity(entity, index) {
     entity.update(this.delta);
   }
 
+  /**
+   * Process gets called every tick
+   */
   process(delta) {
     var context = this;
 
@@ -62,20 +85,28 @@ class Engine {
     });
   }
 
+  /**
+   * Handle new elements coming in with D3
+   */
   enterElements() {
     this.elements.enter()
       .append('g')
       .attr('class', 'entity')
       .each(function(d) {
-        d.element = d.render(
+        d.render(
           d3.select(this)
         );
       });
   }
 
+  /**
+   * Handle elements exiting with D3
+   */
   exitElements() {
     this.elements.exit()
-      .remove();
+      .each(function(d) {
+        d.destroy();
+      });
   }
 
   /**
