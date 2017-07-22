@@ -1,23 +1,21 @@
 module.exports = function (grunt) {
   var config = {
     browserify: {
-      dev: {
+      dist: {
         src: [
-          './src/index.js'
+          './src/**/*'
         ],
-        dest: './dist/js/2d-engine.js',
+        dest: './dist/2d-engine.js',
         options: {
-          watch: true,
-          keepAlive: true,
           browserifyOptions: {
             debug: true
           },
           transform: [
             [
-              "babelify",
+              'babelify',
               {
-                "presets": [
-                  "es2015"
+                'presets': [
+                  'es2015'
                 ]
               }
             ]
@@ -28,6 +26,7 @@ module.exports = function (grunt) {
   };
 
   grunt.loadNpmTasks('grunt-browserify');
+
   grunt.initConfig(config);
 
   grunt.registerTask('default', ['browserify']);

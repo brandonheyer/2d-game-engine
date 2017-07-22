@@ -40,7 +40,6 @@ class BaseEntity {
 
     this.pos.x = (this.pos.x + this.xMax) % this.xMax;
     this.pos.y = (this.pos.y + this.yMax) % this.yMax;
-    );
   }
 
   /**
