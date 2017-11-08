@@ -93,7 +93,7 @@ class Engine {
     entity.update(this.delta);
   }
 
-  trackFPS() {
+  trackFPS(delta) {
     this.frameTimes[this.frames % 100] = delta;
     this.frames++;
     this.average = Math.round(1 / (_.mean(this.frameTimes) / 1000), 2);
@@ -107,7 +107,7 @@ class Engine {
   process(delta) {
     var context = this;
 
-    this.liveTrackFPS();
+    this.liveTrackFPS(delta);
 
     this.elements.each(function(entity, index) {
       context.preProcessEntity(this, entity, index);
