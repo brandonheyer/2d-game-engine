@@ -99,7 +99,7 @@ class Engine {
     this.frames++;
     this.average = Math.round(1 / (_.mean(this.frameTimes) / 1000), 2);
 
-    this.fps.text(this.average);
+    this.displayFPS.text(this.average);
   }
 
   /**
