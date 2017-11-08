@@ -5,7 +5,7 @@ import Vector from './Vector';
  * An engine is the workhorse for the 2d game engine
  */
 class Engine {
-  constructor(svgClass, pixelX, pixelY, worldX, worldY) {
+  constructor(svgClass, pixelX, pixelY, worldX, worldY, options) {
     this.svg = d3.select(svgClass)
       .attr('width', pixelX)
       .attr('height', pixelY);
@@ -27,6 +27,25 @@ class Engine {
 
     this.timeout = undefined;
     this.last = undefined;
+
+    // Only track fps if requested
+    if (options.trackFPS) {
+      this.liveTrackFPS = this.trackFPS;
+
+      this.frames = 0;
+      this.currFrames = 0;
+      this.frameTimes = [];
+      this.frameTimes.length = 100;
+      this.frameTimes.fill(0);
+
+      if (options.displayFPS) {
+        this.displayFPS = options.displayFPS;
+      } else {
+        this.displayFPS = {
+          text: function() {}
+        };
+      }
+    }
   }
 
   /**
@@ -55,10 +74,10 @@ class Engine {
     this.entities.splice(index, 1);
   }
 
-/**
- * Preprocess the entity, this primarily makes sure the selection is up to
- * date in cases where the entity has been removed and replaced with a new one
- */
+  /**
+   * Preprocess the entity, this primarily makes sure the selection is up to
+   * date in cases where the entity has been removed and replaced with a new one
+   */
   preProcessEntity(d3Element, entity, index) {
     if (!entity.element || entity.element._groups[0][0] !== d3Element) {
       entity.element = d3.select(d3Element);
@@ -74,11 +93,21 @@ class Engine {
     entity.update(this.delta);
   }
 
+  trackFPS() {
+    this.frameTimes[this.frames % 100] = delta;
+    this.frames++;
+    this.average = Math.round(1 / (_.mean(this.frameTimes) / 1000), 2);
+
+    this.fps.text(this.average);
+  }
+
   /**
    * Process gets called every tick
    */
   process(delta) {
     var context = this;
+
+    this.liveTrackFPS();
 
     this.elements.each(function(entity, index) {
       context.preProcessEntity(this, entity, index);
