@@ -1,6 +1,6 @@
 {
   "name": "2d-engine",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "description": "A game engine in two using D3 and writtin in ES6",
   "main": "src/index.js",
   "repository": {
@@ -59,7 +59,9 @@
     },
     "overrides": [
       {
-        "files": [ "src/**/*.js" ]
+        "files": [
+          "src/**/*.js"
+        ]
       }
     ],
     "extends": [
