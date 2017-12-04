@@ -29,8 +29,10 @@
     "d3": "^4.9.1"
   },
   "devDependencies": {
-    "babel-preset-es2015": "^6.24.1",
-    "babelify": "^7.3.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babelify": "^8.0.0",
+    "eslint": "^4.12.1",
     "grunt": "^1.0.1",
     "grunt-browserify": "^5.0.0"
   },
@@ -41,10 +43,27 @@
         "babelify",
         {
           "presets": [
-            "es2015"
+            "env"
           ]
         }
       ]
     ]
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    },
+    "overrides": [
+      {
+        "files": [ "src/**/*.js" ]
+      }
+    ],
+    "extends": [
+      "eslint:recommended"
+    ],
+    "env": {
+      "es6": true
+    }
   }
 }
