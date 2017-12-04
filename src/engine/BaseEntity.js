@@ -1,5 +1,3 @@
-import * as d3 from 'd3';
-import Vector from './Vector';
 import Point from './Point';
 
 /**
@@ -52,10 +50,8 @@ class BaseEntity {
   /**
    * The render method is called when the entity is initially added
    * any core properties or svg display should be set up here
-   *
-   * @param  {d3.selection} canvas The d3 selection of the engines main display canvas
    */
-  render(canvas) {
+  render() {
     this.element = undefined;
   }
 }

@@ -17,7 +17,7 @@ class Point extends XYPair {
   scalePlus(scalar, vector) {
     return new Point(
       this.x + (vector.x * scalar),
-      this.y + (vectory.y * scalar)
+      this.y + (vector.y * scalar)
     );
   }
 

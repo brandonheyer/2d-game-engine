@@ -1,6 +1,5 @@
 import * as d3 from 'd3';
 import _ from 'lodash';
-import Vector from './Vector';
 
 /**
  * An engine is the workhorse for the 2d game engine
@@ -90,7 +89,7 @@ class Engine {
   /**
    * Call update on the entity
    */
-  processEntity(entity, index) {
+  processEntity(entity) {
     entity.update(this.delta);
   }
 
@@ -111,6 +110,7 @@ class Engine {
     this.liveTrackFPS(delta);
 
     this.elements.each(function(entity, index) {
+      // Preprocess sending d3 element as first param
       context.preProcessEntity(this, entity, index);
     });
   }
