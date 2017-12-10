@@ -1,5 +1,7 @@
 import {Point, Vector, BaseEntity} from '2d-engine';
 
+const BOUNCE_ABSORPTION = .9;
+
 export default class BallEntity extends BaseEntity {
   constructor(options) {
     super(options);
@@ -53,7 +55,7 @@ export default class BallEntity extends BaseEntity {
         if (dot > 0) {
 
         } else {
-          pushDistance.timesEquals(-.9 * dot);
+          pushDistance.timesEquals(-1 * BOUNCE_ABSORPTION * dot);
 
           this.heading.plusEquals(pushDistance);
           other.heading.minusEquals(pushDistance);
@@ -65,18 +67,18 @@ export default class BallEntity extends BaseEntity {
 
     if (this.pos.x > this.xMax - this.radius) {
       this.pos.x = (this.xMax - this.radius) - (this.pos.x - (this.xMax - this.radius));
-      this.heading.x *= -.9;
-      this.heading.y *= .9;
+      this.heading.x *= -1 * BOUNCE_ABSORPTION;
+      this.heading.y *= BOUNCE_ABSORPTION;
     } else if (this.pos.x < this.radius) {
       this.pos.x = ((this.radius) - (this.pos.x - this.radius));
-      this.heading.x *= -.9;
-      this.heading.y *= .9;
+      this.heading.x *= -1 * BOUNCE_ABSORPTION;
+      this.heading.y *= BOUNCE_ABSORPTION;
     }
 
     if (this.pos.y > this.yMax - this.radius) {
       this.pos.y = (this.yMax - this.radius) - (this.pos.y - (this.yMax - this.radius));
-      this.heading.y *= -.9;
-      this.heading.x *= .9;
+      this.heading.y *= -1 * BOUNCE_ABSORPTION;
+      this.heading.x *= BOUNCE_ABSORPTION;
     }
 
     this.element
