@@ -6,6 +6,8 @@ import _ from 'lodash';
  */
 class Engine {
   constructor(svgClass, pixelX, pixelY, worldX, worldY, options) {
+    options = options || {};
+
     this.svg = d3.select(svgClass)
       .attr('width', pixelX)
       .attr('height', pixelY);
@@ -45,6 +47,8 @@ class Engine {
           text: function() {}
         };
       }
+    } else {
+      this.liveTrackFPS = function() {};
     }
   }
 
@@ -53,6 +57,10 @@ class Engine {
    */
   addEntity(entity) {
     this.entities.push(entity);
+
+    if (!entity.xScale && !entity.yScale) {
+      entity.setScales(this);
+    }
   }
 
   /**
