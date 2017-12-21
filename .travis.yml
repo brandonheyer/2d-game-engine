@@ -4,3 +4,5 @@ node_js:
 script:
   - npm run lint
   - grunt
+after_success:
+  - npm run coveralls
