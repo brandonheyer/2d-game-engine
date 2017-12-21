@@ -31,13 +31,19 @@
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
     "babelify": "^8.0.0",
+    "chai": "^4.1.2",
     "eslint": "^4.12.1",
     "grunt": "^1.0.1",
-    "grunt-browserify": "^5.2.0"
+    "grunt-browserify": "^5.2.0",
+    "mocha": "^4.0.1",
+    "sinon": "^4.1.3",
+    "sinon-chai": "^2.14.0"
   },
   "scripts": {
-    "lint": "./node_modules/.bin/eslint src/**/*.js"
+    "lint": "./node_modules/.bin/eslint src/**/*.js",
+    "test": "./node_modules/.bin/mocha test/*  --require babel-register"
   },
   "browserify": {
     "debug": true,
@@ -69,7 +75,8 @@
     ],
     "env": {
       "browser": true,
-      "es6": true
+      "es6": true,
+      "mocha": true
     }
   }
 }
