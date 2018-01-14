@@ -1,17 +1,21 @@
 import {Point, Vector, BaseEntity} from '2d-engine';
 
-const BOUNCE_ABSORPTION = .9;
+const BOUNCE_ABSORPTION_BALL = .98;
+const BOUNCE_ABSORPTION_WALL = .68;
+const BALL_RADIUS_MIN = 25;
+const BALL_RADIUS_MAX = 500;
+const GRAVITY = 9.8;
 
 export default class BallEntity extends BaseEntity {
   constructor(options) {
     super(options);
 
-    this.speed = 4;
     this.heading = new Vector(
       Math.random(),
       Math.random()
     );
-    this.radius = 500;
+
+    this.radius = Math.random() * (Math.max(BALL_RADIUS_MAX - BALL_RADIUS_MIN, 1)) + BALL_RADIUS_MIN;
   }
 
   startingPosition() {
@@ -32,8 +36,8 @@ export default class BallEntity extends BaseEntity {
     var tempVector;
     var magnitude;
     var pushDistance;
-
-    this.heading.y = this.heading.y + (.1 / delta);
+    var newX;
+    var newY;
 
     for (var i = 0; i < this.entities.length; i++) {
       other = this.entities[i];
@@ -52,33 +56,33 @@ export default class BallEntity extends BaseEntity {
         pushDistance.normalize();
         var dot = tempVector.dot(pushDistance);
 
-        if (dot > 0) {
-
-        } else {
-          pushDistance.timesEquals(-1 * BOUNCE_ABSORPTION * dot);
-
-          this.heading.plusEquals(pushDistance);
-          other.heading.minusEquals(pushDistance);
+        if (dot < 0) {
+          this.heading.scalePlusEquals(-1 * BOUNCE_ABSORPTION_BALL * dot, pushDistance);
+          other.heading.scalePlusEquals(BOUNCE_ABSORPTION_BALL * dot, pushDistance);
         }
       }
     }
 
-    this.pos.scalePlusEquals(this.speed * delta, this.heading);
+    this.heading.y = this.heading.y + (GRAVITY / delta);
+    this.pos.plusEquals(this.heading);
+
+    newX = this.pos.x;
+    newY = this.pos.y;
 
     if (this.pos.x > this.xMax - this.radius) {
       this.pos.x = (this.xMax - this.radius) - (this.pos.x - (this.xMax - this.radius));
-      this.heading.x *= -1 * BOUNCE_ABSORPTION;
-      this.heading.y *= BOUNCE_ABSORPTION;
+      this.heading.x *= -1 * BOUNCE_ABSORPTION_WALL;
     } else if (this.pos.x < this.radius) {
       this.pos.x = ((this.radius) - (this.pos.x - this.radius));
-      this.heading.x *= -1 * BOUNCE_ABSORPTION;
-      this.heading.y *= BOUNCE_ABSORPTION;
+      this.heading.x *= -1 * BOUNCE_ABSORPTION_WALL;
     }
 
     if (this.pos.y > this.yMax - this.radius) {
       this.pos.y = (this.yMax - this.radius) - (this.pos.y - (this.yMax - this.radius));
-      this.heading.y *= -1 * BOUNCE_ABSORPTION;
-      this.heading.x *= BOUNCE_ABSORPTION;
+      this.heading.y *= -1 * BOUNCE_ABSORPTION_WALL;
+    } else if (this.pos.y < this.radius) {
+      this.pos.y = ((this.radius) - (this.pos.y - this.radius));
+      this.heading.y *= -1 * BOUNCE_ABSORPTION_WALL;
     }
 
     this.element

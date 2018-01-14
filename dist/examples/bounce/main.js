@@ -1,6 +1,8 @@
 import {Engine, BaseEntity} from '2d-engine';
 import BallEntity from './BallEntity';
 
+const STARTING_COUNT = 30;
+
 var entity;
 var engine = new Engine(
   '.canvas',
@@ -8,7 +10,7 @@ var engine = new Engine(
   10000, 10000
 );
 
-for (var i = 0; i < 3; i++) {
+for (var i = 0; i < STARTING_COUNT; i++) {
   entity = new BallEntity();
   entity.entities = engine.entities;
 
