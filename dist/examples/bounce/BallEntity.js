@@ -2,8 +2,8 @@ import {Point, Vector, BaseEntity} from '2d-engine';
 
 const BOUNCE_ABSORPTION_BALL = .98;
 const BOUNCE_ABSORPTION_WALL = .68;
-const BALL_RADIUS_MIN = 25;
-const BALL_RADIUS_MAX = 500;
+const BALL_RADIUS_MIN = 5;
+const BALL_RADIUS_MAX = 75;
 const GRAVITY = 9.8;
 
 export default class BallEntity extends BaseEntity {
@@ -85,12 +85,16 @@ export default class BallEntity extends BaseEntity {
       this.heading.y *= -1 * BOUNCE_ABSORPTION_WALL;
     }
 
-    this.element
-      .attr('transform', 'translate(' + this.xScale(this.pos.x) + ',' + this.yScale(this.pos.y) + ')');
+    this.element.translation.set(this.xScale(this.pos.x), this.yScale(this.pos.y));
   }
 
   render(canvas) {
-    this.element = canvas.append('circle')
-      .attr('r', this.xScale(this.radius));
+    this.element = canvas.makeCircle(
+      this.xScale(this.pos.x),
+      this.yScale(this.pos.y),
+      this.xScale(this.radius)
+    );
+
+    this.element.fill = '#000000';
   }
 }

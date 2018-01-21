@@ -1,6 +1,7 @@
 import BaseEntity from './engine/BaseEntity';
 
 import Engine from './engine/Engine';
+import TwoEngine from './engine/TwoEngine';
 import SVGEngine from './engine/SVGEngine';
 
 import Point from './engine/Point';
@@ -11,6 +12,7 @@ export {
   BaseEntity,
 
   Engine,
+  TwoEngine,
   SVGEngine,
 
   Point,
