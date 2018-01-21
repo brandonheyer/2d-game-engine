@@ -1,10 +1,10 @@
-import {Engine, BaseEntity} from '2d-engine';
+import {SVGEngine, BaseEntity} from '2d-engine';
 import BallEntity from './BallEntity';
 
 const STARTING_COUNT = 30;
 
 var entity;
-var engine = new Engine(
+var engine = new SVGEngine(
   '.canvas',
   800, 800,
   10000, 10000

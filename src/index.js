@@ -1,14 +1,18 @@
-import XYPair from './engine/XYPair';
-import Vector from './engine/Vector';
+import BaseEntity from './engine/BaseEntity';
+
+import Engine from './engine/Engine';
+import SVGEngine from './engine/SVGEngine';
 
 import Point from './engine/Point';
-
-import BaseEntity from './engine/BaseEntity';
-import Engine from './engine/Engine';
+import Vector from './engine/Vector';
+import XYPair from './engine/XYPair';
 
 export {
   BaseEntity,
+
   Engine,
+  SVGEngine,
+
   Point,
   Vector,
   XYPair
