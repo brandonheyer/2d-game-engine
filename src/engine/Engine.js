@@ -50,7 +50,15 @@ class Engine {
     }
   }
 
-  initializeCanvas(canvasClass, pixelX, pixelY, options) {
+  /**
+   * Initializes the drawing canvas
+   *
+   * @param  {[type]} canvasClass [description]
+   * @param  {[type]} pixelX      [description]
+   * @param  {[type]} pixelY      [description]
+   * @param  {[type]} options     [description]
+   */
+  initializeCanvas() {
     return;
   }
 

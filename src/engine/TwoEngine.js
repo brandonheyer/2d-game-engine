@@ -8,7 +8,7 @@ import Engine from './Engine';
  * An engine is the workhorse for the 2d game engine
  */
 class TwoEngine extends Engine {
-  initializeCanvas(canvasClass, pixelX, pixelY, options) {
+  initializeCanvas(canvasClass, pixelX, pixelY) {
     var parent = document.querySelector(canvasClass);
 
     this.canvas = new Two({

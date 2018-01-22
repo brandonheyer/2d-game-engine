@@ -1,6 +1,10 @@
 import * as d3 from 'd3';
+import * as _ from 'lodash';
 
-class BaseGrid {
+/**
+ * Work in progress
+ */
+export default class class BaseGrid {
   constructor(options) {
     this.xScale = d3.scaleLinear()
       .domain(0, options.gridX)
@@ -13,11 +17,9 @@ class BaseGrid {
     this.grid = [];
     this.grid.length = options.gridY;
 
-    _.each(this.grid, (g) => {
+    this.grid.foreach((g) => {
       g = [];
       g.length = options.gridX;
     });
   }
-};
-
-export default BaseGrid;
+}
