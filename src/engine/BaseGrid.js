@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 /**
  * Work in progress
  */
-export default class class BaseGrid {
+export default class BaseGrid {
   constructor(options) {
     this.xScale = d3.scaleLinear()
       .domain(0, options.gridX)
