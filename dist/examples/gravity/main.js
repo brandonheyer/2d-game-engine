@@ -10,44 +10,47 @@ var height = $('body').innerHeight();
 var engine = new UniverseEngine(
   '.canvas',
   width, height,
-  (width * 5000) / height, 5000,
+  (width * 4000) / height, 4000,
   {
     trackFPS: true,
     displayFPS: $('.fps')
   }
 );
 
-entity = new PlanetEntity({
-  mass: 10000000000,
-  startingPosition: new Point(engine.xScale.domain()[1] / 2, engine.yScale.domain()[1] / 2),
-  density: 1024000
+let controlRun = $('#control-run');
+let controlRestart = $('#control-restart');
+
+function addSun() {
+  entity = new PlanetEntity({
+    mass: 20000000000,
+    startingPosition: new Point(engine.xScale.domain()[1] / 2, engine.yScale.domain()[1] / 2),
+    density: 1024000
+  });
+
+  entity.engine = engine;
+  entity.entities = engine.entities;
+  entity.isSun = true;
+  engine.addEntity(entity);
+}
+
+addSun();
+
+controlRun.click(() => {
+  if (engine.running) {
+    engine.stop();
+    controlRun.val('Start');
+  } else {
+    engine.start();
+    controlRun.val('Pause');
+  }
 });
 
-entity.engine = engine;
-entity.entities = engine.entities;
-entity.isSun = true;
-engine.addEntity(entity);
+controlRestart.click(() => {
+  engine.clear();
 
-// entity = new PlanetEntity({
-//   mass: 6000000,
-//   startingPosition: new Point((engine.xScale.domain()[1] / 2 + 700), engine.yScale.domain()[1] / 2),
-//   radius: 50,
-//   headingX: .06,
-//   headingY: -1.95
-// });
-// entity.engine = engine;
-// entity.entities = engine.entities;
-// engine.addEntity(entity);
-//
-// entity = new PlanetEntity({
-//   mass: 6000000,
-//   startingPosition: new Point((engine.xScale.domain()[1] / 2) - 700, engine.yScale.domain()[1] / 2),
-//   radius: 50,
-//   headingX: -.06,
-//   headingY: 1.95
-// });
-// entity.engine = engine;
-// entity.entities = engine.entities;
-// engine.addEntity(entity);
+  controlRun.val('Start');
+  addSun();
+  engine.canvas.render();
+});
 
 engine.start();

@@ -72,7 +72,15 @@ class TwoEngine extends Engine {
    * Stop the engine
    */
   stop() {
+    super.stop();
+    this.canvas.pause();
+  }
 
+  clear() {
+    this.canvas.clear();
+    super.clear();
+
+    this.canvas.render();
   }
 }
 

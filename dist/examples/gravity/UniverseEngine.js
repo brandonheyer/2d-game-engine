@@ -25,6 +25,7 @@ export default class UniverseEngine extends TwoEngine {
     this.liveTrackFPS(delta);
     this.totalTime += this.delta;
     this.lastAsteroid += this.delta;
+
     if (
       (this.entities.length < 500 && this.totalTime < 1200000 &&  this.lastAsteroid > this.lastTimeout) ||
       (this.entities.length < 50 && this.lastAsteroid > this.lastTimeout) ||
@@ -39,44 +40,48 @@ export default class UniverseEngine extends TwoEngine {
       let generator = Math.floor(Math.random() * 1000) / 10;
       let density = 10 + Math.floor(Math.random() * 100) / 10;
 
-      this.created++;
+      if (!this.running) {
+        return;
+      }
 
       this.updateStats();
 
       this.lastAsteroid = 0;
       this.lastTimeout = (Math.random() * 5) + 1;
 
-      if (generator <= 10) {
+      if (generator <= 0) {
         xPos = this.xPrime / 2;
         yPos = (1/8 * this.yPrime) + ((Math.random() * (this.yPrime / 300)) - (this.yPrime / 600));
         headingX = 1.61 + ((Math.random() / 10) - .05);
 
-      } else if (generator <= 20) {
+      } else if (generator <= 0) {
         xPos = this.xPrime / 2;
         yPos = (7/8 * this.yPrime) + ((Math.random() * (this.yPrime / 300)) - (this.yPrime / 600));
         headingX = -1.61 - ((Math.random() / 10) - .05);
 
-      } else if (generator <= 35) {
+      } else if (generator <= 0) {
         xPos = (5/16 * this.xPrime) + ((Math.random() * (this.xPrime / 300)) - (this.xPrime / 600));
         headingY = -1.55 - ((Math.random() / 10) - .05);
 
-      } else if (generator <= 50) {
+      } else if (generator <= 0) {
         xPos = (11/16 * this.xPrime) - ((Math.random() * (this.xPrime / 300)) - (this.xPrime / 600));
         headingY = 1.55 + ((Math.random() / 10) - .05);
 
-      } else if (generator <= 74.5) {
+      } else if (generator <= 50) {
         xPos = (0) - ((Math.random() * (this.xPrime / 300)) - (this.xPrime / 600));
-        headingY = -.91 + ((Math.random() / 10) - .05);
-        density /= 2;
-        mass *= 2;
+        // headingY = -.91 + ((Math.random() / 10) - .05);
+        headingY = -1.21 + ((Math.random() / 10) - .05);
+        density /= 1;
+        mass *= 1;
 
-      } else if (generator <= 99) {
+      } else if (generator <= 100) {
         xPos = (this.xPrime) - ((Math.random() * (this.xPrime / 300)) - (this.xPrime / 600));
-        headingY = .91 + ((Math.random() / 10) - .05);
-        density /= 2;
-        mass *= 2;
+        // headingY = .91 + ((Math.random() / 10) - .05);
+        headingY = 1.21 + ((Math.random() / 10) - .05);
+        density /= 1;
+        mass *= 1;
 
-      } else if (generator <= 99.5) {
+      } else if (generator <= 0) {
         xPos = (-3/8 * this.xPrime) - ((Math.random() * (this.xPrime / 300)) - (this.xPrime / 600));
         headingY = -.41 + ((Math.random() / 10) - .05);
         mass *= 50;
@@ -132,6 +137,8 @@ export default class UniverseEngine extends TwoEngine {
 
   generate(options) {
     options = options || {};
+
+    this.created++;
 
     if (options.pos) {
       options.xPos = options.pos.x;

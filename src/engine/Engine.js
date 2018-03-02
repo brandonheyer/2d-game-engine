@@ -84,6 +84,14 @@ class Engine {
     }
   }
 
+  removeAllEntities() {
+    _.each(this.entities, (e) => {
+      e.destroy();
+    });
+
+    this.entities = [];
+  }
+
   /**
    * Remove the entity at the specific index
    */
@@ -131,13 +139,19 @@ class Engine {
    */
   start() {
     this.last = +(new Date());
+    this.running = true;
   }
 
   /**
    * Stop the engine
    */
   stop() {
+    this.running = false;
+  }
 
+  clear() {
+    this.stop();
+    this.removeAllEntities();
   }
 }
 

@@ -124,13 +124,13 @@ export default class PlanetEntity extends BaseEntity {
       }
     } else {
         if (this.density < 1024000 / 4 && this.mass / this.density > 2500) {
-          this.density += this.density * .002 / (delta / 1000);
+          this.density += this.density * .0001 / (delta / 1000);
           this.renderDensity();
         } else if (this.mass / this.density > 10000) {
-          this.density += this.density * .001 / (delta / 1000);
+          this.density += this.density * .00005 / (delta / 1000);
           this.renderDensity();
         } else if (this.mass / this.density < 100) {
-          this.density -= this.density * .0025 / (delta / 1000);
+          this.density -= this.density * .000125 / (delta / 1000);
           this.renderDensity();
         }
 
