@@ -28,6 +28,22 @@ module.exports = function (grunt) {
           ]
         }
       },
+      gravity: {
+        files: [{
+          expand: true,
+          src: [
+            './dist/examples/gravity/main.js'
+          ],
+          ext: '.min.js',
+          extDot: 'first'
+        }],
+        options: {
+
+          external: [
+            '2d-engine'
+          ]
+        }
+      },
       options: {
         browserifyOptions: {
           debug: true
