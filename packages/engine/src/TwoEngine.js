@@ -12,6 +12,7 @@ export default class TwoEngine extends Engine {
   }
 
   initializeCanvas(canvasClass, pixelX, pixelY) {
+    super.initializeCanvas(canvasClass, pixelX, pixelY);
     var parent = document.querySelector(canvasClass);
 
     this.canvas = new Two({
@@ -21,6 +22,7 @@ export default class TwoEngine extends Engine {
     });
 
     this.canvas.appendTo(parent);
+    window.__CANVAS__ = this.canvas;
 
     var context = this;
     this.canvas.bind('update', function() {

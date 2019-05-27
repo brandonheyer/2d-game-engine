@@ -232,11 +232,11 @@ export default class Engine {
    */
   tick() {
     var newLast = +(new Date());
-    var delta = this.delta = (newLast - this.last) * this.speedMultiplier;
+    this.delta = ((newLast - this.last) * this.speedMultiplier) || 1;
 
     this.last = newLast;
 
-    return delta;
+    return this.delta;
   }
 
   /**
