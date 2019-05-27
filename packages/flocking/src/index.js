@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import $ from 'jQuery';
+import $ from 'jquery';
 
 import Engine from './engine/Engine';
 import BasicBoid from './entities/BasicBoid';

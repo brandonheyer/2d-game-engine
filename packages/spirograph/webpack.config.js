@@ -3,8 +3,8 @@ const path = require("path");
 module.exports = {
   entry: './src/index.js',
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'dist/js/index.min.js'
+    path: path.resolve(__dirname, 'dist/js'),
+    filename: 'index.min.js'
   },
   mode: "development",
   module: {

@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import $ from 'jQuery';
+import $ from 'jquery';
 import * as Prism from 'prismjs';
 import showdown from 'showdown';
 
