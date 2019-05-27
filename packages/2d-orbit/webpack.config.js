@@ -33,11 +33,12 @@ module.exports = {
   resolve: {
     extensions: ['*', '.js', '.jsx']
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin()
-  ],
+  // plugins: [
+  //   new webpack.HotModuleReplacementPlugin()
+  // ],
   devServer: {
-    contentBase: './dist',
-    hot: true
+    contentBase: path.resolve(__dirname, 'dist'),
+    hot: true,
+    port: 9000
   }
 };

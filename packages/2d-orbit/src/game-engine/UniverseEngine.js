@@ -25,6 +25,8 @@ export default class UniverseEngine extends TwoEngine {
 
     this.offset = this.canvas.renderer.domElement.getBoundingClientRect();
 
+    window.__ENTITIES__ = this.entities;
+
     this.generatorOptions = {
       multi: function(xStart, yStart, xHeading, yHeading) {
         var context = this;
@@ -267,7 +269,8 @@ export default class UniverseEngine extends TwoEngine {
 
   addEntity(entity) {
     entity.entities = this.entities;
-    
+    entity.engine = this;
+
     return super.addEntity(entity);
   }
 

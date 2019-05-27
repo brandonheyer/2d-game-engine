@@ -12,8 +12,6 @@ import "./index.css";
 const height = window.innerHeight;
 const width = window.innerWidth;
 
-const engine = AppEngine(width, height);
-
 // const portalStart = new PortalEntity({
 //   size: 250,
 //   startingPosition: new Point(engine.xScale.domain()[1] / 2, engine.yScale.domain()[1] / 4),
@@ -55,11 +53,11 @@ const engine = AppEngine(width, height);
 // engine.addEntity(portalStart2);
 // engine.addEntity(portalEnd2);
 
+const engine = AppEngine(width, height);
+
 AppEngine.addSun();
 
 engine.start();
-
-// ========================================
 
 ReactDOM.render(
   React.createElement(UI),

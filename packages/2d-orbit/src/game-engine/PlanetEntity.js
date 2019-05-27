@@ -145,6 +145,11 @@ export default class PlanetEntity extends BaseEntity {
       this.disableReporting();
       this.engine.removeEntity(this);
     } else if (this.dying) {
+      if (this.dyingFade === 1) {
+        this.headingElement.remove();
+        this.forceElement.remove();
+      }
+
       this.dyingFade -= this.deltaScaled;
 
       if (this.dyingFade <= 0) {
@@ -168,18 +173,29 @@ export default class PlanetEntity extends BaseEntity {
       this.heading.y += this.forceVector.y / this.mass * delta;
 
       const endHeading = this.heading.getNormalized();
-      this.headingElement.vertices[0].set(
-        this.xScale(this.pos.x),
-        this.yScale(this.pos.y)
-      );
       this.headingElement.vertices[1].set(
-        this.xScale((this.pos.x + endHeading.x) * 1000),
-        this.yScale((this.pos.y + endHeading.y) * 1000)
+        this.xScale((endHeading.x) * this.radius),
+        this.yScale((endHeading.y) * this.radius)
       );
-      this.headingElement.linewidth = this.scale(50);
+
+      const endForce = this.forceVector.getNormalized();
+      this.forceElement.vertices[1].set(
+        this.xScale(endForce.x * this.radius),
+        this.yScale(endForce.y * this.radius)
+      )
 
       this.pos.scalePlusEquals(delta, this.heading);
       this.element.translation.set(
+        this.xScale(this.pos.x),
+        this.yScale(this.pos.y)
+      );
+
+      this.headingElement.translation.set(
+        this.xScale(this.pos.x),
+        this.yScale(this.pos.y)
+      );
+
+      this.forceElement.translation.set(
         this.xScale(this.pos.x),
         this.yScale(this.pos.y)
       );
@@ -201,17 +217,8 @@ export default class PlanetEntity extends BaseEntity {
         );
       });
 
-      const endHeading = this.heading.getNormalized();
-      // this.headingElement.vertices[0].set(
-      //   this.xScale(0),
-      //   this.yScale(0)
-      // );
-
-      this.headingElement.vertices[1].set(
-        this.xScale(endHeading.x * 1000),
-        this.yScale(endHeading.y * 1000)
-      );
-      this.headingElement.linewidth = this.xScale(50);
+      this.headingElement.linewidth = this.scale(20);
+      this.forceElement.linewidth = this.scale(20);
 
       this.element.translation.set(
         this.xScale(this.pos.x),
@@ -219,6 +226,11 @@ export default class PlanetEntity extends BaseEntity {
       );
 
       this.headingElement.translation.set(
+        this.xScale(this.pos.x),
+        this.yScale(this.pos.y)
+      );
+
+      this.forceElement.translation.set(
         this.xScale(this.pos.x),
         this.yScale(this.pos.y)
       );
@@ -251,15 +263,25 @@ export default class PlanetEntity extends BaseEntity {
       this.planetElement.curved = true;
       this.planetElement.noStroke();
 
-      const endHeading = this.pos.scalePlus(1000, this.heading.getNormalized());
+      const endHeading = this.heading.getNormalized();
       this.headingElement = canvas.makeLine(
         this.xScale(0),
         this.yScale(0),
-        this.xScale(this.heading.x * 1000),
-        this.yScale(this.heading.y * 1000)
+        this.xScale(endHeading.x * this.radius),
+        this.yScale(endHeading.y * this.radius)
       );
-      this.headingElement.linewidth = this.scale(50);
+      this.headingElement.linewidth = this.scale(20);
       this.headingElement.stroke = "#ff0000";
+
+      const endForce = this.forceVector.getNormalized();
+      this.forceElement = canvas.makeLine(
+        this.xScale(0),
+        this.yScale(0),
+        this.xScale(endForce.x * this.radius),
+        this.yScale(endForce.y * this.radius)
+      );
+      this.forceElement.linewidth = this.scale(20);
+      this.forceElement.stroke = "#0000ff";
 
       this.element = this.planetElement; //this.canvas.makeGroup(this.planetElement, this.headingElement);
 
@@ -269,6 +291,11 @@ export default class PlanetEntity extends BaseEntity {
       );
 
       this.headingElement.translation.set(
+        this.xScale(this.pos.x),
+        this.yScale(this.pos.y)
+      );
+
+      this.forceElement.translation.set(
         this.xScale(this.pos.x),
         this.yScale(this.pos.y)
       );
