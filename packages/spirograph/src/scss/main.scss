@@ -1,0 +1,81 @@
+$lightest-gray: #d0eeee;
+$gray: #999999;
+$darkest-gray: #09090c;
+
+$border-radius: 3px;
+$letter-spacing: 1px;
+
+* {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+body {
+  background: $darkest-gray;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+.sp-fps {
+  position: fixed;
+  right: 0;
+  padding: 1em;
+  font-size: 10px;
+  text-align: right;
+  bottom: 0;
+  color: $lightest-gray;
+}
+
+.stats .stat-value {
+  display: inline-block;
+  float: right;
+}
+
+.sp-controls {
+  position: fixed;
+  bottom: 0;
+  margin: 0 auto;
+}
+
+.sp-control {
+  padding: 0 1em .5em;
+}
+
+.sp-control-label {
+  text-transform: uppercase;
+  color: $lightest-gray;
+  text-align: left;
+  display: inline-block;
+  width: 10em;
+  font-size: 1rem;
+  letter-spacing: $letter-spacing;
+}
+
+.sp-control-input {
+  background: $lightest-gray;
+  color: $darkest-gray;
+  font-size: 1rem;
+  outline: 0;
+  border: 0;
+  padding: .25em .5em;
+}
+
+.sp-button {
+  text-transform: uppercase;
+  padding: .5em 1em;
+  background: $lightest-gray;
+  border: 0;
+  border-radius: $border-radius;
+  padding: 1em 2em;
+  margin: .5em 1em;
+  letter-spacing: $letter-spacing;
+  cursor: pointer;
+
+  &:disabled {
+    background: $gray;
+    opacity: .5;
+    cursor: default;
+  }
+}

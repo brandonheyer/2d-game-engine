@@ -1,0 +1,90 @@
+{
+  "name": "2d-engine",
+  "version": "0.5.2",
+  "description": "A game engine in two using D3 and writtin in ES6",
+  "main": "src/index",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/brandonheyer/2d-engine.git"
+  },
+  "keywords": [
+    "2d",
+    "game",
+    "engine",
+    "es6",
+    "babel",
+    "d3",
+    "visualization"
+  ],
+  "author": {
+    "name": "Brandon Heyer",
+    "email": "brandonheyer@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brandonheyer/2d-engine/issues"
+  },
+  "homepage": "https://github.com/brandonheyer/2d-engine#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "babel-loader": "^8.0.6",
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
+    "coveralls": "^3.0.0",
+    "d3": "^5.9.2",
+    "eslint": "^4.12.1",
+    "event-pubsub": "^4.3.0",
+    "istanbul": "^0.4.5",
+    "jquery": "^3.4.1",
+    "mocha": "^4.0.1",
+    "mocha-lcov-reporter": "^1.3.0",
+    "sinon": "^4.1.3",
+    "sinon-chai": "^2.14.0",
+    "two.js": "^0.7.0-beta.3",
+    "webpack": "^4.32.2",
+    "webpack-cli": "^3.3.2"
+  },
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint src/**/*.js",
+    "test": "./node_modules/.bin/mocha test/*  --require babel-register",
+    "cover": "./node_modules/.bin/babel-node ./node_modules/.bin/babel-istanbul cover _mocha test/* -- --require babel-register ",
+    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
+  },
+  "browserify": {
+    "debug": true,
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "env"
+          ]
+        }
+      ]
+    ]
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    },
+    "overrides": [
+      {
+        "files": [
+          "src/**/*.js"
+        ]
+      }
+    ],
+    "extends": [
+      "eslint:recommended"
+    ],
+    "env": {
+      "browser": true,
+      "es6": true,
+      "mocha": true
+    }
+  }
+}

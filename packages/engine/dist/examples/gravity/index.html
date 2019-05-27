@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <title>Bounce</title>
+
+    <script src="../../2d-engine.js"> </script>
+
+    <style>
+      html, body {
+        background-color: #000000;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .fps {
+        bottom: 0;
+        right: 0;
+
+        position: fixed;
+        color: #aaaaaa;
+        font-size: 10px;
+      }
+
+      .stats {
+        bottom: 0;
+        left: 0;
+
+        position: fixed;
+        color: #aaaaaa;
+        font-size: 10px;
+      }
+
+      .controls {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+      }
+
+      .controls input {
+        display: inline-block;
+      }
+    </style>
+
+  </head>
+  <body>
+    <div class="canvas"> </div>
+
+    <div class="fps"> </div>
+    <div class="stats"> </div>
+    <div class="controls">
+      <input type="button" value="Pause" id="control-run"/>
+      <input type="button" value="Restart" id="control-restart" />
+    </div>
+
+    <script src="main.min.js"> </script>
+  </body>
+</html>

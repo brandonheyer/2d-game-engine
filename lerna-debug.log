@@ -1,0 +1,11 @@
+0 silly argv { _: [ 'bootstrap' ],
+0 silly argv   lernaVersion: '3.14.1',
+0 silly argv   '$0': 'node_modules/.bin/lerna' }
+1 notice cli v3.14.1
+2 verbose rootPath /Users/brandonheyer/projects/2d-game-engine
+3 error Error: Invalid package name "2d-engine/bounce": name can only contain URL-friendly characters
+3 error     at invalidPackageName (/Users/brandonheyer/projects/2d-game-engine/node_modules/npm-package-arg/npa.js:82:15)
+3 error     at Result.setName (/Users/brandonheyer/projects/2d-game-engine/node_modules/npm-package-arg/npa.js:118:11)
+3 error     at new Result (/Users/brandonheyer/projects/2d-game-engine/node_modules/npm-package-arg/npa.js:107:23)
+3 error     at Function.resolve (/Users/brandonheyer/projects/2d-game-engine/node_modules/npm-package-arg/npa.js:54:15)
+3 error     at new Package (/Users/brandonheyer/projects/2d-game-engine/node_modules/@lerna/package/index.js:36:26)

@@ -1,0 +1,65 @@
+* {
+  font-family: 'Roboto Condensed', sans-serif; }
+
+body {
+  background: #09090c;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+  font-family: 'Roboto Condensed', sans-serif; }
+
+.sp-fps {
+  position: fixed;
+  right: 0;
+  padding: 1em;
+  font-size: 10px;
+  text-align: right;
+  bottom: 0;
+  color: #d0eeee; }
+
+.stats .stat-value {
+  display: inline-block;
+  float: right; }
+
+.sp-controls {
+  position: fixed;
+  bottom: 0;
+  margin: 0 auto; }
+
+.sp-control {
+  padding: 0 1em .5em; }
+
+.sp-control-label {
+  text-transform: uppercase;
+  color: #d0eeee;
+  text-align: left;
+  display: inline-block;
+  width: 10em;
+  font-size: 1rem;
+  letter-spacing: 1px; }
+
+.sp-control-input {
+  background: #d0eeee;
+  color: #09090c;
+  font-size: 1rem;
+  outline: 0;
+  border: 0;
+  padding: .25em .5em; }
+
+.sp-button {
+  text-transform: uppercase;
+  padding: .5em 1em;
+  background: #d0eeee;
+  border: 0;
+  border-radius: 3px;
+  padding: 1em 2em;
+  margin: .5em 1em;
+  letter-spacing: 1px;
+  cursor: pointer; }
+  .sp-button:disabled {
+    background: #999999;
+    opacity: .5;
+    cursor: default; }
+
+/*# sourceMappingURL=styles.css.map */
