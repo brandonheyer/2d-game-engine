@@ -16,17 +16,23 @@ export default class Engine {
     this.on = this.events.on.bind(this.events);
     this.off = this.events.off.bind(this.events);
     this.emit = this.events.emit.bind(this.events);
+    this.zoom = this.zoom.bind(this);
+    this.zoomOut = this.zoomOut.bind(this);
+    this.zoomIn = this.zoomIn.bind(this);
 
     this.initializeCanvas(canvasClass, pixelX, pixelY, options);
 
     this.body = $('body');
 
-    this.zoom = 1;
+    this.zoomEnabled = true;
+    
+    // this.zoom = 1;
     this.speedMultiplier = 1;
 
     this.xMax = worldX;
     this.yMax = worldY;
-
+    this.xOffset = 0;
+    this.yOffset = 0;
 
     this.xScale = d3.scaleLinear()
       .domain([0, worldX])
@@ -81,6 +87,8 @@ export default class Engine {
       let xPos = 0;
       let yPos = 0;
 
+      const meta = e.metaKey || e.ctrlKey;
+
       switch(e.keyCode) {
         case 65:
           xPos = this.xMax * -.05;
@@ -97,10 +105,38 @@ export default class Engine {
         case 87:
           yPos = this.yMax * .05;
           break;
+
+        case 187:
+          if (meta) {
+            this.zoomIn();
+          }
+          break;
+
+        case 189:
+          if (meta) {
+            this.zoomOut();
+          }
+          break;
+
+        default:
+          return;
       }
 
-      this.xScale.domain([xDomain[0] + xPos, xDomain[1] + xPos]);
-      this.yScale.domain([yDomain[0] + yPos, yDomain[1] + yPos]);
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      if (xPos || yPos) {
+        this.xOffset = this.xOffset + xPos;
+        this.yOffset = this.yOffset + yPos;
+
+        this.canvas.scene.translation.set(
+          this.xScale(this.xOffset),
+          this.yScale(this.yOffset)
+        );
+      }
+
+      // this.xScale.domain([xDomain[0] + xPos, xDomain[1] + xPos]);
+      // this.yScale.domain([yDomain[0] + yPos, yDomain[1] + yPos]);
     });
   }
 
@@ -259,26 +295,40 @@ export default class Engine {
     this.removeAllEntities();
   }
 
-  handleScroll(e, up) {
-    let xDomain = this.xScale.domain();
-    let yDomain = this.yScale.domain();
-    let xScale = 1/16 * this.xMax;
-    let yScale = 1/16 * this.yMax;
-    let xPosRatio = e.offsetX / this.xScale.range()[1];
-    let yPosRatio = e.offsetY / this.yScale.range()[1];
+  zoom(xO, yO, xS, yS) {
+    if (this.zoomEnabled) {
+      let xDomain = this.xScale.domain();
+      let yDomain = this.yScale.domain();
+      let xScale = 1/16 * this.xMax * xS;
+      let yScale = 1/16 * this.yMax * yS;
+      let xPosRatio = xO / this.xScale.range()[1];
+      let yPosRatio = yO / this.yScale.range()[1];
 
-    if (up) {
-      xScale *= -1;
-      yScale *= -1;
+      this.xScale.domain([xDomain[0] + (xScale * xPosRatio), xDomain[1] - (xScale * (1 - xPosRatio))]);
+      this.yScale.domain([yDomain[0] + (yScale * yPosRatio), yDomain[1] - (yScale * (1 - yPosRatio))]);
+      this.scale.domain([0, this.xScale.domain()[1] - this.xScale.domain()[0]]);
+
+      _.each(this.entities, (e) => {
+        e.render(this.canvas);
+      });
     }
+  }
 
-    this.xScale.domain([xDomain[0] + (xScale * xPosRatio), xDomain[1] - (xScale * (1 - xPosRatio))]);
-    this.yScale.domain([yDomain[0] + (yScale * yPosRatio), yDomain[1] - (yScale * (1 - yPosRatio))]);
-    this.scale.domain([0, this.xScale.domain()[1] - this.xScale.domain()[0]]);
+  zoomOut(offsetX = 0, offsetY = 0) {
+    this.zoom(offsetX, offsetY, -1, -1);
+  }
 
-    _.each(this.entities, (e) => {
-      e.render();
-    });
+  zoomIn(offsetX = 0, offsetY = 0) {
+    this.zoom(offsetX, offsetY, 1, 1);
+  }
+
+  handleScroll(e, up) {
+    if (up) {
+      this.zoomOut(e.offsetX, e.offsetY);
+    }
+    else {
+      this.zoomIn(e.offsetX, e.offsetY);
+    }
   }
 
   initializeScroll() {

@@ -22,13 +22,13 @@ export default class SunEntity extends PlanetEntity {
         this.tempVector = other.pos.minus(this.pos);
         magnitudeSq = this.tempVector.magnitudeSq();
 
-        if (magnitudeSq > 2500000000) {
+        if (magnitudeSq > 500000000) {
           other.dead = true;
           this.engine.flung++;
         }
 
         else if (Math.sqrt(magnitudeSq) <= this.radius + other.radius) {
-          other.dying = true;
+          other.dead = true;
           other.dyingFade = 1;
         }
       }

@@ -68,7 +68,6 @@ function updateEntityOptions() {
     initialize: function() {
       this.group = getRandomGroup();
       this.speed = getRandomSpeed();
-      // this.weight = 1 / this.speed;
       this.weight = 1;
       this.radius = getRandomRadius();
     },
@@ -140,15 +139,9 @@ function getRandomRadius() {
 function addEntity(options) {
   options = options || {};
 
-  if (!engine.entities.length) {
-    engine.addEntity(
-      new EducationalBoid(options)
-    );
-  } else {
-    engine.addEntity(
-      new BasicBoid(options)
-    );
-  }
+  engine.addEntity(
+    new BasicBoid(options)
+  );
 }
 
 function updateParams() {
@@ -166,6 +159,10 @@ function updateParams() {
     entity.initializeProperties(
       _.omit(entityOptions, ['initialize'])
     );
+
+    if (engine.running) {
+      entity.render(engine.canvas);
+    }
   });
 
   window.location.hash = res.substring(0);

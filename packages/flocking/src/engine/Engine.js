@@ -9,6 +9,8 @@ class Engine extends TwoEngine {
     });
 
     options = options || {};
+
+    this.zoomEnabled = false;
   }
 
   initializeCanvas(canvasClass, pixelX, pixelY) {
@@ -57,13 +59,14 @@ class Engine extends TwoEngine {
   trackFPS(delta) {
     this.frameTimes[this.frames] = delta;
     this.frames = this.frames + 1;
+
     if (this.frames > 99) {
       this.frames = 0;
+
+      this.average = Math.round(1 / (_.mean(this.frameTimes) / 1000), 2);
+
+      this.displayFPS[0].innerText = this.average;
     }
-
-    this.average = Math.round(1 / (_.mean(this.frameTimes) / 1000), 2);
-
-    this.displayFPS[0].innerText = this.average;
   }
 
   process(delta) {

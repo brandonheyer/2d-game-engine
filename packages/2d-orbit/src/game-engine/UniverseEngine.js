@@ -14,8 +14,6 @@ export default class UniverseEngine extends TwoEngine {
     this.yPrime = 1800;/// * .66;
     this.xPrime = this.xScale.domain()[1] * this.yPrime / this.yScale.domain()[1]; //* .66;
 
-    this.xOffset = (this.xScale.domain()[1] - this.xPrime) / 2;
-    this.yOffset = (this.yScale.domain()[1] - this.yPrime) / 2;
     this.created = 0;
     this.removed = 0;
     this.totalTime = 0;
@@ -76,18 +74,18 @@ export default class UniverseEngine extends TwoEngine {
         var context = this;
 
         return {
-          rate: 100,
-          chance: 1,
-          total: 1,
+          rate: 2000,
+          chance: .75,
+          total: 25,
           generator: () => {
             this.generate({
               useOffset: false,
               xPos: xStart,
               yPos: yStart,
-              headingX: xHeading * (1 + Generator.random(-.1, .1, 5)),
-              headingY: yHeading * (1 + Generator.random(-.1, .1, 5)),
-              density: 100000,
-              mass: 50000000,
+              headingX: xHeading * (1 + Generator.random(-.2, .2, 5)),
+              headingY: yHeading * (1 + Generator.random(-.2, .2, 5)),
+              density: 1000000,
+              mass: Generator.random(200000000, 500000000, 0),
               engine: context
             });
           }

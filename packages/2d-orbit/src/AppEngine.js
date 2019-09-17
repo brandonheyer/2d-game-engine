@@ -17,18 +17,19 @@ AppEngine.addSun = function() {
   const entity = new SunEntity({
     mass: 2500000000,
     startingPosition: new Point(engine.xScale.domain()[1] / 2, engine.yScale.domain()[1] / 2),
-    density: 10000000,
+    density: 1000000,
     engine
   });
 
   engine.addEntity(entity);
+  engine.sun = entity;
 };
 
 AppEngine.initialize = function(width, height) {
   const e = new UniverseEngine(
     '.canvas',
     width, height,
-    (width * 8000) / height, 8000,
+    (width * 16000) / height, 16000,
     {
       trackFPS: true,
       displayFPS: $('.fps')

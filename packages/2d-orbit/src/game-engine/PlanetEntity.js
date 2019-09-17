@@ -28,6 +28,8 @@ export default class PlanetEntity extends BaseEntity {
     this.deltaScaled = 0;
     this.rotationSpeed = (Math.random() / 2) + .2;
 
+    this.pathString = "";
+
     this.disableReporting = this.disableReporting.bind(this);
     this.enableReporting = this.enableReporting.bind(this);
   }
@@ -67,14 +69,21 @@ export default class PlanetEntity extends BaseEntity {
 
                 this.heading.x = ((this.heading.x * m1) + (other.heading.x * m2)) / (m1 + m2);
                 this.heading.y = ((this.heading.y * m1) + (other.heading.y * m2)) / (m1 + m2);
+                other.heading.x = ((this.heading.x * m1) + (other.heading.x * m2)) / (m1 + m2);
+                other.heading.y = ((this.heading.y * m1) + (other.heading.y * m2)) / (m1 + m2);
 
-                this.mass += other.mass;
+                this.mass += other.mass / 3;
                 this.renderDensity();
 
                 other.dying = true;
                 other.dyingFade = 1;
+                // this.dying = true;
+                return;
               }
-            } else if (other.isSun || magnitudeSq < 50000000) {
+            } else if (other.isSun && magnitudeSq > 500000000) {
+              this.dead = true;
+              return;
+            } else if (other.isSun || magnitudeSq < 50000000000) {
               force = this.engine.GEE * this.mass * other.mass / magnitudeSq;
 
               angle = this.tempVector.angle();
@@ -105,7 +114,6 @@ export default class PlanetEntity extends BaseEntity {
       this.update = this.updateAndReport;
 
       this.engine.emit('reporting:planet', this);
-      console.log("enable");
     }
   }
 
@@ -115,12 +123,12 @@ export default class PlanetEntity extends BaseEntity {
       this._update = undefined;
 
       this.engine.emit('planet:reporting', undefined);
-      console.log("disable");
     }
   }
 
   updateAndReport(delta) {
     this._update(delta);
+
     this.emit('setting:change:mass', this.mass);
     this.emit('setting:change:radius', this.radius);
     this.emit('setting:change:density', this.density);
@@ -144,28 +152,85 @@ export default class PlanetEntity extends BaseEntity {
     if (this.dead) {
       this.disableReporting();
       this.engine.removeEntity(this);
+
+
+      this.headingElement && this.headingElement.remove();
+      this.forceElement && this.forceElement.remove();
+      this.pathElement && this.pathElement.remove();
     } else if (this.dying) {
-      if (this.dyingFade === 1) {
-        this.headingElement.remove();
-        this.forceElement.remove();
+      this.headingElement && this.headingElement.remove();
+      this.forceElement && this.forceElement.remove();
+      this.pathElement && this.pathElement.remove();
+
+      this.dead = true;
+
+      if (this.mass > 10000000) {
+        let newVec = new Vector(this.heading);
+        let newPos = new Point(this.pos);
+        newVec.setLeftOrtho();
+        newVec.normalize();
+        newVec.timesEquals(this.radius);
+        newPos.plusEquals(newVec);
+
+        let entity = new PlanetEntity({
+          mass: this.mass / 3,
+          density: this.density,
+          startingPosition: new Point(newPos),
+          radius: this.radius / 3,
+          headingX: ((-1 * this.heading.y) + (this.heading.x * 3)) / 4,
+          headingY: (this.heading.x + (this.heading.y * 3)) / 4,
+          engine: this.engine
+        });
+
+        entity.entities = this.entities;
+        entity.engine = this;
+
+        this.engine.addEntity(entity);
+
+        newVec = new Vector(this.heading);
+        newPos = new Point(this.pos);
+        newVec.setRightOrtho();
+        newVec.normalize();
+        newVec.timesEquals(this.radius);
+        newPos.plusEquals(newVec);
+
+        entity = new PlanetEntity({
+          mass: this.mass / 3,
+          density: this.density,
+          startingPosition: new Point(newPos),
+          radius: this.radius / 3,
+          headingX: ((this.heading.x * 3) + this.heading.y) / 4,
+          headingY: ((-1 * this.heading.x) + (this.heading.y * 3)) / 4,
+          engine: this.engine
+        });
+
+        entity.entities = this.entities;
+        entity.engine = this;
+
+        this.engine.addEntity(entity);
       }
 
-      this.dyingFade -= this.deltaScaled;
+      // if (this.dyingFade === 1) {
+      //   this.headingElement.remove();
+      //   this.forceElement.remove();
+      //   this.pathElement.remove();
 
-      if (this.dyingFade <= 0) {
-        this.engine.removeEntity(this);
-      } else {
-        this.planetElement.fill = 'rgba(100, 15, 0, ' + this.dyingFade + ')';
-        this.element.scale += this.deltaScaled * 2;
-      }
+      // this.dyingFade -= this.deltaScaled;
+      //
+      // if (this.dyingFade <= 0) {
+      //   this.engine.removeEntity(this);
+      // } else {
+      //   this.planetElement.fill = 'rgba(100, 15, 0, ' + this.dyingFade + ')';
+      //   this.element.scale += this.deltaScaled * 2;
+      // }
     } else {
-      if (this.density < 10000000 / 4 && this.mass / this.density > 250) {
-        this.density += this.density * .001 / this.deltaScaled;
-      } else if (this.mass / this.density > 1000) {
-        this.density += this.density * .0005 / this.deltaScaled;
-      } else if (this.mass / this.density < 50) {
-        this.density -= this.density * .00125 / this.deltaScaled;
-      }
+      // if (this.density < 10000000 / 4 && this.mass / this.density > 250) {
+      //   this.density += this.density * .001 / this.deltaScaled;
+      // } else if (this.mass / this.density > 1000) {
+      //   this.density += this.density * .0005 / this.deltaScaled;
+      // } else if (this.mass / this.density < 50) {
+      //   this.density -= this.density * .00125 / this.deltaScaled;
+      // }
 
       this.renderDensity();
 
@@ -173,41 +238,76 @@ export default class PlanetEntity extends BaseEntity {
       this.heading.y += this.forceVector.y / this.mass * delta;
 
       const endHeading = this.heading.getNormalized();
-      this.headingElement.vertices[1].set(
-        this.xScale((endHeading.x) * this.radius),
-        this.yScale((endHeading.y) * this.radius)
+      const endForce = this.forceVector.getNormalized();
+
+      this.translateByPoint(this.pos);
+      this.translateByPoint(this.pos, this.forceElement);
+
+      this.headingElement.vertices[0].set(
+        this.xScale(this.pos.x + endHeading.x),
+        this.yScale(this.pos.y + endHeading.y)
       );
 
-      const endForce = this.forceVector.getNormalized();
+      this.headingElement.vertices[1].set(
+        this.xScale(this.pos.x + endHeading.x * this.radius),
+        this.yScale(this.pos.y + endHeading.y * this.radius)
+      );
+
+      this.forceElement.vertices[0].set(
+        this.xScale(0),
+        this.yScale(0)
+      );
+
       this.forceElement.vertices[1].set(
         this.xScale(endForce.x * this.radius),
         this.yScale(endForce.y * this.radius)
-      )
+      );
 
       this.pos.scalePlusEquals(delta, this.heading);
-      this.element.translation.set(
+
+      const anchor = new Two.Anchor(
         this.xScale(this.pos.x),
         this.yScale(this.pos.y)
       );
 
-      this.headingElement.translation.set(
-        this.xScale(this.pos.x),
-        this.yScale(this.pos.y)
-      );
+      anchor._origX = this.pos.x - this.startX;
+      anchor._origY = this.pos.y - this.startY;
+      this.pathElement.vertices.push(anchor);
 
-      this.forceElement.translation.set(
-        this.xScale(this.pos.x),
-        this.yScale(this.pos.y)
-      );
+      const lastAngle = this.startAngle;
+      this.startAngle = (this.pos.minus(this.engine.sun.pos).angle() * 180 / Math.PI + 360) % 360;
+      this.rotationAmount += Math.abs(this.startAngle - lastAngle);
 
+      if (this.rotationAmount > 1440) {
+        this.pathElement.vertices.shift();
+      }
       // this.element.rotation = this.element.rotation + (this.rotationSpeed / delta);
     }
+  }
+
+  addPath() {
+    const v1 = new Two.Anchor(
+      this.xScale(this.pos.x),
+      this.yScale(this.pos.y)
+    );
+
+    v1._origX = this.pos.x;
+    v1._origY = this.pos.y;
+
+    this.pathElement = new Two.Path([v1], false);
+    this.canvas.add(this.pathElement);
+
+    this.pathElement.fill = "none";
+    this.pathElement.stroke = "#aaaacc";
   }
 
   render(canvas) {
     if (canvas) {
       this.canvas = canvas;
     }
+
+    const endHeading = this.heading.getNormalized();
+    const endForce = this.forceVector.getNormalized();
 
     if (this.element) {
       this.planetElement.vertices.forEach((v,i) => {
@@ -217,28 +317,38 @@ export default class PlanetEntity extends BaseEntity {
         );
       });
 
-      this.headingElement.linewidth = this.scale(20);
-      this.forceElement.linewidth = this.scale(20);
+      this.pathElement.vertices.forEach((v,i) => {
+        v.set(
+          this.xScale(v._origX),
+          this.yScale(v._origY)
+        );
+      });
 
-      this.element.translation.set(
+      this.headingElement.vertices[0].set(
+        this.xScale(this.pos.x),
+        this.yScale(this.pos.y),
+      );
+
+      this.headingElement.vertices[1].set(
+        this.xScale(this.pos.x + endHeading.x * this.radius),
+        this.yScale(this.pos.y + endHeading.y * this.radius),
+      );
+
+      this.forceElement.vertices[0].set(
         this.xScale(this.pos.x),
         this.yScale(this.pos.y)
       );
 
-      this.headingElement.translation.set(
-        this.xScale(this.pos.x),
-        this.yScale(this.pos.y)
-      );
-
-      this.forceElement.translation.set(
-        this.xScale(this.pos.x),
-        this.yScale(this.pos.y)
+      this.forceElement.vertices[1].set(
+        this.xScale(this.pos.x + endForce.x * this.radius),
+        this.yScale(this.pos.y + endForce.y * this.radius)
       );
     } else {
-      this.points = [];
       const totalPoints = 16;
       const radianPerPoint = (2 * Math.PI) / totalPoints;
       let rotation = 0;
+
+      this.points = [];
 
       for (let i = 0; i < totalPoints; i++) {
         const distance = this.radius - (Math.random() * this.radius / 4);
@@ -263,48 +373,41 @@ export default class PlanetEntity extends BaseEntity {
       this.planetElement.curved = true;
       this.planetElement.noStroke();
 
-      const endHeading = this.heading.getNormalized();
       this.headingElement = canvas.makeLine(
-        this.xScale(0),
-        this.yScale(0),
-        this.xScale(endHeading.x * this.radius),
-        this.yScale(endHeading.y * this.radius)
+        this.xScale(this.pos.x),
+        this.yScale(this.pos.y),
+        this.xScale(this.pos.x + endHeading.x * this.radius),
+        this.yScale(this.pos.y + endHeading.y * this.radius)
       );
-      this.headingElement.linewidth = this.scale(20);
       this.headingElement.stroke = "#ff0000";
 
-      const endForce = this.forceVector.getNormalized();
       this.forceElement = canvas.makeLine(
         this.xScale(0),
         this.yScale(0),
         this.xScale(endForce.x * this.radius),
         this.yScale(endForce.y * this.radius)
       );
-      this.forceElement.linewidth = this.scale(20);
       this.forceElement.stroke = "#0000ff";
 
-      this.element = this.planetElement; //this.canvas.makeGroup(this.planetElement, this.headingElement);
-
-      this.element.translation.set(
-        this.xScale(this.pos.x),
-        this.yScale(this.pos.y)
-      );
-
-      this.headingElement.translation.set(
-        this.xScale(this.pos.x),
-        this.yScale(this.pos.y)
-      );
-
-      this.forceElement.translation.set(
-        this.xScale(this.pos.x),
-        this.yScale(this.pos.y)
-      );
+      this.element = this.planetElement;
 
       this._update = this.update;
       this.update = this.updateAndBind;
     }
 
+    this.headingElement.linewidth = this.scale(20);
+    this.forceElement.linewidth = this.scale(20);
     this.planetElement.fill = d3.interpolatePlasma(SCALE(this.density));
+
+    this.addPath();
+
+    this.startX = this.pos.x;
+    this.startY = this.pos.y;
+    this.startAngle = (this.pos.minus(this.engine.sun.pos).angle() * 180 / Math.PI + 360) % 360;
+    this.rotationAmount = 0;
+
+    this.translateByPoint(this.pos);
+    this.translateByPoint(this.pos, this.forceElement);
   }
 
   destroy() {

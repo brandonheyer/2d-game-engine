@@ -233,20 +233,33 @@ class BaseBoid extends BaseEntity {
     );
   }
 
-  updateElements() {
-    // this.boidElement = this.element.select('.boid');
-    // this.rangeElement = this.element.select('.boid-range');
+  renderRange(canvas) {
+    if (this.element) {
+      if (!this.rangeElement) {
+        this.rangeElement = canvas.makeCircle(0, 0, this.xScale(this.range))
+
+        this.rangeElement.addTo(this.element);
+      };
+
+      this.rangeElement.radius = this.xScale(this.range);
+      this.rangeElement.noStroke();
+      this.rangeElement.fill = "rgba(255, 200, 200, 0.1)";
+
+      this.oldRange = this.range;
+      this.oldRangeVisible = this.rangeVisible = true;
+    }
   }
 
-  renderRange() {
-    // this.rangeElement = this.element.append('circle')
-    //   .attr('r', this.xScale(this.range))
-    //   .attr('fill', 'rgba(255, 255, 255, 0.1)')
-    //   .attr('stroke', 'rgba(255, 255, 255, 0.5)')
-    //   .attr('class', 'boid-range');
+  renderHeading(canvas) {
+    // if (this.element) {
+    //   this.headingElement = this.element.append('path');
     //
-    // this.oldRange = this.range;
-    // this.oldRangeVisible = this.rangeVisible = true;
+    //   this.headingElement
+    //     .attr('fill', this.headingFill || '#000000');
+    //
+    //     this.oldHeading = this.heading;
+    //     this.oldHeadingVisible = this.headingVisible = true;
+    // }
   }
 
   updateStyles() {
@@ -254,16 +267,16 @@ class BaseBoid extends BaseEntity {
       this.renderMethod();
     }
 
-    this.element.radius = this.xScale(this.radius);
-    this.element.fill = this.fill || '#000000';
+    if (this.rangeElement && this.oldRange !== this.range) {
+      this.rangeElement.radius = this.xScale(this.range);
+    }
 
-    // this.headingElement
-      // .attr('fill', this.headingFill || '#000000');
+    this.boidElement.radius = this.xScale(this.radius);
+    this.boidElement.fill = this.fill || '#000000';
+    this.boidElement.noStroke();
   }
 
   destroy() {
-    // console.log('destroy');
-    // canvas.remove(this.element);
     this.element.remove();
     this.element = undefined;
     this.boidElement = undefined;
@@ -273,15 +286,23 @@ class BaseBoid extends BaseEntity {
 
   render(canvas) {
     if (!this.element) {
-      this.element = canvas.makeCircle(0, 0, this.xScale(this.radius));
-      // this.headingElement = this.element.append('path');
-      // this.boidElement = this.element.append('circle');
-      this.updateStyles();
+      this.element = canvas.makeGroup();
     }
 
-    if (this.rangeVisible) {
-      this.renderRange();
+    if (!this.boidElement) {
+      this.boidElement = canvas.makeCircle(0, 0, this.xScale(this.radius));
+      this.boidElement.addTo(this.element);
     }
+
+    if (!this.rangeElement && this.rangeVisible) {
+      this.renderRange(canvas);
+    }
+
+    if (!this.headingElement && this.headingVisible) {
+      this.renderHeading(canvas);
+    }
+
+    this.updateStyles();
   }
 }
 

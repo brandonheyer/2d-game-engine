@@ -30,7 +30,7 @@ class DrawPoint extends BaseEntity {
     this.splitTime -= delta;
 
     if (this.splitTime < 0) {
-      this.addPolyline();
+      this.addPath();
 
       this.pathString = this.lastPath + ' ';
       this.splitTime = this.startSplitTime;
@@ -106,14 +106,12 @@ class DrawPoint extends BaseEntity {
     this.pathElement = undefined;
     this.pathString = '';
 
-    // this.pathGroup.selectAll('polyline').remove();
     this.pathGroup.selectAll('path').remove();
 
-    this.addPolyline();
+    this.addPath();
   }
 
-  addPolyline() {
-    // this.pathElement = this.pathGroup.append('polyline');
+  addPath() {
     this.pathElement = this.pathGroup.append('path');
 
     this.pathElement
@@ -125,10 +123,9 @@ class DrawPoint extends BaseEntity {
     if (!this.element) {
       this.element = canvas.append('g');
       this.pathGroup = this.element.append('g');
-      // this.pathGroup.attr('filter', 'url(#f3)');
       this.pointElement = this.element.append('circle');
 
-      this.addPolyline();
+      this.addPath();
       this.updateStyles();
     }
   }

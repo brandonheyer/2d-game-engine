@@ -86,4 +86,18 @@ export default class BaseEntity {
   render() {
     this.element = undefined;
   }
+
+  translate(x, y, element = this.element) {
+    element.translation.set(
+      this.xScale(x),
+      this.yScale(y)
+    );
+  }
+
+  translateByPoint(point, element = this.element) {
+    element.translation.set(
+      this.xScale(point.x),
+      this.yScale(point.y)
+    );
+  }
 };
