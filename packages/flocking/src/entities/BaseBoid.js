@@ -3,6 +3,11 @@ import {BaseEntity, Point, Vector} from '2d-engine';
 var tempVector = new Vector(0, 0);
 var id = 0;
 
+const sq2o2 = Math.sqrt(2) / 2;
+const negSq2o2 = -1 * sq2o2;
+const sq3o3 = Math.sqrt(3) / 2;
+const negSq3o3 = -1 * sq3o3;
+
 class BaseBoid extends BaseEntity {
   constructor(options) {
     super(options);
@@ -11,7 +16,8 @@ class BaseBoid extends BaseEntity {
 
     this.initializeProperties(options);
 
-    this.heading = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1);
+    // this.heading = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1);
+    this.heading = new Vector(1, 0);
     this.heading.normalize();
 
     this.weight = 1;
@@ -29,6 +35,8 @@ class BaseBoid extends BaseEntity {
     this.groupAlignmentVector = new Vector(0, 0);
     this.groupCohesionVector = new Vector(0, 0);
     this.groupSeparationVector = new Vector(0, 0);
+
+    this.flap = 0;
   }
 
   startingPosition() {
@@ -217,20 +225,46 @@ class BaseBoid extends BaseEntity {
     this.heading.normalize();
   }
 
-  updatePos() {
-    this.pos.x = (this.pos.x + this.xMax) % this.xMax
-    this.pos.y = (this.pos.y + this.yMax) % this.yMax;
-  }
-
   update(delta) {
-    this.pos.scalePlusEquals(this.speed * delta, this.heading);
+    // this.pos.scalePlusEquals(this.speed * delta, this.heading);
+    this.pos.x = (
+      (this.pos.x + (this.heading.x * this.speed * delta)) + this.xMax
+    ) % this.xMax;
 
-    this.updatePos();
+    this.pos.y = (
+      (this.pos.y + (this.heading.y * this.speed * delta)) + this.yMax
+    ) % this.yMax;
 
     this.element.translation.set(
       this.xScale(this.pos.x),
       this.yScale(this.pos.y)
     );
+
+    this.lastRotation = this.element.rotation;
+
+    const newRotation = this.heading.angle();
+
+    if (Math.abs(this.lastRotation - newRotation) > 0.01) {
+      this.element.rotation = this.heading.angle();
+    }
+
+    this.flap += delta / 250;
+
+    const flapSin = Math.sin(this.flap);
+    const flapCos = Math.cos(this.flap);
+
+    this.body1.vertices[1].x = (2 - flapCos) * negSq2o2 * this.radius / 4;
+    this.body1.vertices[1].y = (4 - flapSin) * negSq2o2 * this.radius / 4;
+    this.body1.vertices[3].x = (2 - flapCos) * negSq2o2 * this.radius / 4;
+    this.body1.vertices[3].y = (4 - flapSin) * sq2o2 * this.radius / 4;
+
+    this.body2.vertices[1].x = (3 - flapCos) * -.5 * this.radius / 3;
+    this.body2.vertices[1].y = (1.5 - flapSin) * sq3o3 * this.radius / 3;
+    this.body2.vertices[3].x = (3 - flapCos) * -.5 * this.radius / 3;
+    this.body2.vertices[3].y = (1.5 - flapSin) * negSq3o3 * this.radius / 3;
+
+    // this.body2.vertices[0].x = ((-.25 + (Math.sin(this.flap) / 4) * this.radius));
+    // this.body2.vertices[0].x = ((-.25 + ( / 2) * this.radius));
   }
 
   renderRange(canvas) {
@@ -242,7 +276,7 @@ class BaseBoid extends BaseEntity {
       };
 
       this.rangeElement.radius = this.xScale(this.range);
-      this.rangeElement.noStroke();
+      // this.rangeElement.noStroke();
       this.rangeElement.fill = "rgba(255, 200, 200, 0.1)";
 
       this.oldRange = this.range;
@@ -271,9 +305,14 @@ class BaseBoid extends BaseEntity {
       this.rangeElement.radius = this.xScale(this.range);
     }
 
-    this.boidElement.radius = this.xScale(this.radius);
-    this.boidElement.fill = this.fill || '#000000';
-    this.boidElement.noStroke();
+    this.resizeBody();
+
+    // this.boidElement.radius = this.xScale(this.radius);
+    this.body1.fill = this.fill || '#000000';
+    this.body2.fill = this.body1.fill;
+    this.body2.opacity = 0.5;
+
+    // this.boidElement.noStroke();
   }
 
   destroy() {
@@ -284,13 +323,75 @@ class BaseBoid extends BaseEntity {
     this.rangeElement = undefined;
   }
 
+  resizeBody() {
+    const radius = this.xScale(this.radius);
+
+    this.body1.vertices[0].x = -.1 * radius;
+    this.body1.vertices[1].x = negSq2o2 * radius;
+    this.body1.vertices[1].y = negSq2o2 * radius;
+    this.body1.vertices[2].x = radius;
+    this.body1.vertices[3].x = negSq2o2 * radius;
+    this.body1.vertices[3].y = sq2o2 * radius;
+
+    this.body2.vertices[0].x = -.25 * radius;
+    this.body2.vertices[1].x = -.5 * radius;
+    this.body2.vertices[1].y = sq3o3 * radius;
+    this.body2.vertices[2].x = .75 * radius;
+    this.body2.vertices[3].x = -.5 * radius;
+    this.body2.vertices[3].y = negSq3o3 * radius;
+  }
+
   render(canvas) {
     if (!this.element) {
       this.element = canvas.makeGroup();
     }
 
     if (!this.boidElement) {
-      this.boidElement = canvas.makeCircle(0, 0, this.xScale(this.radius));
+      this.boidElement = canvas.makeGroup();
+
+      // const body = canvas.makeCircle(0, 0, this.xScale(this.radius));
+      // const beak = canvas.makeCircle(this.xScale(this.radius), 0, this.xScale(this.radius / 2));
+
+      // body.addTo(this.boidElement);
+      // beak.addTo(this.boidElement);
+
+      // this.boidElement = canvas.makePolygon(0, 0, this.xScale(this.radius), 3);
+
+      const radius = this.xScale(this.radius);
+
+      this.body1 = canvas.makePath(
+        [
+          new Two.Anchor(-.1 * radius, 0),
+          new Two.Anchor(negSq2o2 * radius, negSq2o2 * radius),
+          new Two.Anchor(radius, 0),
+          new Two.Anchor(negSq2o2 * radius, sq2o2 * radius)
+        ],
+        true
+      );
+
+      this.body2 = canvas.makePath(
+        [
+          new Two.Anchor(-.25 * radius, 0),
+          new Two.Anchor(-.5 * radius, sq3o3 * radius),
+          new Two.Anchor(.75 * radius, 0),
+          new Two.Anchor(-.5 * radius, negSq3o3 * radius),
+        ],
+        true
+      );
+
+      this.body1.noStroke();
+      this.body1.miter = undefined;
+      this.body1.cap = undefined;
+      this.body1.join = undefined;
+
+      this.body2.noStroke();
+      this.body2.miter = undefined;
+      this.body2.cap = undefined;
+      this.body2.join = undefined;
+
+      this.body2.addTo(this.boidElement);
+      this.body1.addTo(this.boidElement);
+
       this.boidElement.addTo(this.element);
     }
 

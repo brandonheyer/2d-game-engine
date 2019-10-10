@@ -14,17 +14,17 @@ class Engine extends TwoEngine {
   }
 
   initializeCanvas(canvasClass, pixelX, pixelY) {
-    var parent = document.querySelector(canvasClass);
+    const parent = document.querySelector(canvasClass);
 
     this.canvas = new Two({
       width: pixelX,
       height: pixelY,
-      type: Two.Types.webgl
+      type: Two.Types.canvas
     });
 
     this.canvas.appendTo(parent);
 
-    var context = this;
+    const context = this;
     this.canvas.bind('update', function() {
       context.tick();
     });

@@ -5,9 +5,9 @@ const TOLERANCE_SQ = TOLERANCE * TOLERANCE;
 
 class Vector extends XYPair {
   angle() {
-    if (this.magnitudeSq() < TOLERANCE_SQ) {
-      return 0;
-    }
+    // if (this.magnitudeSq() < TOLERANCE_SQ) {
+    //   return 0;
+    // }
 
     return Math.atan2(this.y, this.x);
   }
