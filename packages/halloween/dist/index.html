@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <title>Flocking</title>
+
+    <style>
+      body {
+        padding: 0;
+        background: #000000;
+      }
+
+      .fk-controls {
+        position: fixed;
+        top: 0;
+        height: 100%;
+        right: 0;
+        font-size: 16px;
+        padding-right: 2em;
+      }
+    </style>
+    <link rel="stylesheet" href="normalize.css" />
+  </head>
+  <body>
+    <div class="fk-canvas"> </div>
+
+    <div class="fk-controls">
+      <ul>
+        <li>
+          <label>FPS</label>
+          <span class="fk-fps"> </span>
+        </li>
+        <li>
+          <label>Formula</label>
+          <span>
+            <input class="formula" type="text"> </input>
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <script src="js/index.min.js"> </script>
+  </body>
+</html>

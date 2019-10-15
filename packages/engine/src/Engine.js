@@ -25,7 +25,7 @@ export default class Engine {
     this.body = $('body');
 
     this.zoomEnabled = true;
-    
+
     // this.zoom = 1;
     this.speedMultiplier = 1;
 
@@ -49,8 +49,6 @@ export default class Engine {
     this.entities = [];
     this.generators = [];
     this.enabledGenerators = [];
-
-    this.ticks = 0;
 
     this.timeout = undefined;
     this.last = undefined;

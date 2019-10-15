@@ -18,13 +18,36 @@ export default class BaseEntity {
     this.off = this.events.off.bind(this.events);
     this.emit = this.events.emit.bind(this.events);
 
-    options.engine && this.setScales(options.engine);
+    this.initializeProperties(options);
 
     this.speed = 0;
     this.heading = new Vector(0, 0);
+  }
+
+  initializeProperties(options) {
+    options = options || {};
+
+    options.engine && this.setScales(options.engine);
+
+    this.xMax = this.xScale.domain()[1];
+    this.yMax = this.yScale.domain()[1];
+
+    this.renderMethod = options.render;
 
     // Store or create the starting position
-    this.pos = options.startingPosition || this.startingPosition();
+    if (typeof(options.startingPosition) === "function") {
+      this.pos = options.startingPosition.call(this);
+    }
+    else if (options.startingPosition) {
+      this.pos = options.startingPosition;
+    }
+    else {
+      this.pos = this.startingPosition();
+    }
+
+    if (options.initialize) {
+      options.initialize.call(this);
+    }
   }
 
   /**

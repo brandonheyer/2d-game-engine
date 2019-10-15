@@ -11,6 +11,7 @@ class Engine extends TwoEngine {
     options = options || {};
 
     this.zoomEnabled = false;
+    this.nextFPSUpdate = 1000;
   }
 
   initializeCanvas(canvasClass, pixelX, pixelY) {
@@ -65,7 +66,13 @@ class Engine extends TwoEngine {
 
       this.average = Math.round(1 / (_.mean(this.frameTimes) / 1000), 2);
 
-      this.displayFPS[0].innerText = this.average;
+      if (this.nextFPSUpdate < 0) {
+        this.displayFPS[0].innerText = this.average;
+        this.nextFPSUpdate = 1000;
+      }
+      else {
+        this.nextFPSUpdate -= delta;
+      }
     }
   }
 
