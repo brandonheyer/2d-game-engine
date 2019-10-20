@@ -2,6 +2,11 @@ import { Point } from '2d-engine';
 import BaseOrbs from "./BaseOrbs";
 
 export default class Serpent extends BaseOrbs {
+  constructor(options) {
+    super(Object.assign({
+      connect: true
+    }, options));
+  }
   getOrbStartPositions() {
     return [
       new Point(0, this.yScale.domain()[1] / 2),

@@ -5,7 +5,7 @@ export default class BaseOrbs extends BaseEntity {
   constructor(options) {
     super(options);
 
-    this.pos = this.getOrbStartPositions();
+    this.pos = options.getOrbStartPositions ? options.getOrbStartPosition() : this.getOrbStartPositions();
 
     this.lowX = Infinity;
     this.highX = -Infinity;
@@ -15,23 +15,47 @@ export default class BaseOrbs extends BaseEntity {
       this.highX = Math.max(p.x, this.highX);
     });
 
-    this.orbLength = this.highX - this.lowX;
-    this.connect = true;
-
     this.fill = [
-      "#cc0000",
-      "#0000cc",
+      "#ffec9e",
+      "#ffc89e",
+      "#dedede",
       "#00cc00",
       "#cc00cc",
       "#00cccc",
       "#cccc00",
-      "#cccccc"
     ];
 
-    this.radius = 0.1;
     this.time = 0;
-    this.timeReducer = 500;
-    this.timeReducer2 = 1000;
+    this.totalTime = 0;
+
+    this.preUpdateOrbPosition = options.preUpdateOrbPosition ?
+      options.preUpdateOrbPosition.bind(this) :
+      this.preUpdateOrbPosition;
+
+    this.postUpdateOrbPosition = options.postUpdateOrbPosition ?
+      options.postUpdateOrbPosition.bind(this) :
+      this.postUpdateOrbPosition;
+
+    this.updateOrbPosition = options.updateOrbPosition ?
+      options.updateOrbPosition.bind(this) :
+      this.updateOrbPosition;
+
+    this.radius = options.radius || 0.1;
+    this.timeReducer = options.timeReducer || 500;
+    this.timeReducer2 = options.timeReducer2 || 1000;
+    this.overflowScale = 1.05;
+    this.moveSlow = options.moveSlow || 500;
+    this.engine = options.engine;
+
+    this.connect = options.connect || false;
+
+    this.trace = options.trace || false;
+    this.tracerStroke = options.tracerStroke || "#663311";
+    this.tracerWidth = options.tracerWidth || 1;
+  }
+
+  getDefaultStartPosition() {
+    return new Point(0, this.yScale.domain()[1] / 2);
   }
 
   getOrbStartPositions() {
@@ -50,33 +74,42 @@ export default class BaseOrbs extends BaseEntity {
   }
 
   updateOrbPosition(delta, orbPosition, orbIndex) {
-    orbPosition.x = (delta / this.timeReducer2) + orbPosition.x;
-    orbPosition.y = ((this.yMax / 2) + orbPosition.y + this.yMax) % this.yMax;
+    orbPosition.x += (delta / this.timeReducer2);
+    orbPosition.y = (orbPosition.y + (this.yMax / 2)) % this.yMax;
 
     if (this.allOutOfBounds) {
-      orbPosition.x = (orbPosition.x + this.xMax) % this.xMax - this.orbLength;
+      const scaledRadius = this.radius * this.orbs[orbIndex].scale;
+      const orbLength = ((this.highX + scaledRadius) * this.overflowScale) - ((this.lowX - scaledRadius) * this.overflowScale)
+
+      orbPosition.x = -this.overflowScale * scaledRadius - (orbPosition.x % ((this.xMax + scaledRadius) * this.overflowScale));
+    }
+
+    for (let i = 0; i < this.orbs[orbIndex].children.length - 1; i++) {
+      const currOrb = this.orbs[orbIndex].children[i];
+
+      currOrb.scale = .75 + Math.abs(
+        Math.sin(
+          this.totalTime / 3 * speed * (1 + (i * 0.15))
+        )
+      ) * (1 + (i * 0.1));
     }
 
     this.translateByPoint(orbPosition, this.orbs[orbIndex]);
-
     this.updateConnection(delta, orbPosition, orbIndex);
   }
 
   update(delta) {
     this.time = (this.time + (delta / this.timeReducer)) % this.xMax;
+    this.totalTime += delta / this.timeReducer;
 
     this.pos.forEach(_.bind(this.preUpdateOrbPosition, this, delta));
 
-    this.allOutOfBounds = this.pos.every(p => p.x > this.xMax * 1.05);
+    this.allOutOfBounds = this.pos.every(
+      (p, i) => p.x > (this.xMax + (this.radius * this.orbs[i].scale)) * this.overflowScale
+    );
 
     this.pos.forEach(_.bind(this.updateOrbPosition, this, delta));
     this.pos.forEach(_.bind(this.postUpdateOrbPosition, this, delta));
-  }
-
-  updateStyles() {
-    this.orbs.forEach((o, i) => o.fill = this.fill[i % this.fill.length]);
-
-    this.connect && (this.connection.stroke = "#cccccc");
   }
 
   destroy() {
@@ -99,11 +132,18 @@ export default class BaseOrbs extends BaseEntity {
         points.push(0);
         points.push(0);
 
-        this.orbs[i] = canvas.makeCircle(
-          this.xScale(this.pos[i].x),
-          this.yScale(this.pos[i].y),
+        this.orbs[i] = canvas.makeGroup();
+
+        let tempOrb = canvas.makeCircle(
+          this.xScale(0),
+          this.yScale(0),
           this.xScale(this.radius)
         );
+
+        tempOrb.fill = this.fill[i];
+        tempOrb.noStroke();
+
+        tempOrb.addTo(this.orbs[i]);
       });
 
       points.push(true);
@@ -116,8 +156,6 @@ export default class BaseOrbs extends BaseEntity {
       this.orbs.forEach(o => o.addTo(this.element));
     }
 
-    this.orbs.forEach(o => o.noStroke());
-
-    this.updateStyles();
+    this.connect && (this.connection.stroke = "#cccccc");
   }
 }
