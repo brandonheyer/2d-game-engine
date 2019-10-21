@@ -48,6 +48,7 @@
         text-shadow: 4px 4px 1px #731D09;
         padding-top: 0;
         margin-bottom: 0;
+        transform-origin: bottom;
       }
 
       h3 {
@@ -86,7 +87,7 @@
       .fk-canvas {
         margin: 0 auto;
         width: 1400px;
-        height: 780px;
+        height: 850px;
         padding: 3em 1em;
       }
 
@@ -124,7 +125,7 @@
 
     <script src="js/index.min.js"> </script>
     <script>
-      const verticalMargin = window.verticalMargin = ($(window).outerHeight() - 780) / 2;
+      const verticalMargin = window.verticalMargin = ($(window).outerHeight() - 850) / 2;
       const body = $("body");
       const params = {};
 
@@ -196,7 +197,6 @@
 
         if (subStep <= 0) {
           window.preTransition();
-          console.log("animate");
           $("body").animate(
             {
               scrollTop: currSection.offset().top - verticalMargin,
@@ -238,10 +238,8 @@
           case 32:
           case 39:
             if (Array.isArray(currStepDef) && currStepDef[subStep + 1]) {
-              console.log("array");
               subStep++;
             } else {
-              console.log("not array");
               curr = (curr >= sections.length - 1) ? curr : curr + 1;
               subStep = -1;
             }
@@ -263,7 +261,6 @@
             children.each((i, el) =>
               $(el).animate({ opacity: 0}, 200, () => {
                 $(el).remove();
-                console.log(i, children.length);
 
                 if (i === children.length - 1) {
                   transitionTo();

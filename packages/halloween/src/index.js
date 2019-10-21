@@ -7,6 +7,7 @@ import Engine from "./engine/Engine";
 import Tracer from "./entities/Tracer";
 import DualOrbs from "./entities/DualOrbs";
 import Serpent from "./entities/Serpent";
+import Penta from "./entities/Penta";
 
 import BaseOrb from "./entities/BaseOrb";
 
@@ -49,7 +50,7 @@ function addEntity(options) {
 }
 
 const width = 1400;
-const height = 780;
+const height = 850;
 
 updateEntityOptions();
 
@@ -62,7 +63,7 @@ window.preTransition = () => {
 
 function addAnimatedHeader(content, section, tag = "h2") {
   const h = $(`<${tag}>${content}</${tag}>`)
-    .css({ opacity: 1 })
+    .css({ opacity: 0 })
     .appendTo(section);
 
   setTimeout(() => h.animate({ opacity : 1 }));
@@ -130,7 +131,8 @@ const steps = window.steps = [
           preUpdatePosition: function() {
             this.pos.y = Math.sin(this.pos.x);
           },
-          speed: 500
+          speed: 750,
+          radius: .3
         })
       ],
       2 * Math.PI,
@@ -147,7 +149,26 @@ const steps = window.steps = [
           preUpdatePosition: function() {
             this.pos.y = -1 * Math.abs(Math.sin(this.pos.x))
           },
-          speed: 500
+          speed: 500,
+          radius: .4
+        })
+      ],
+      Math.PI * 4,
+      3
+    )
+  ],
+
+  // round(sin)
+  [
+    (section) => addAnimatedHeader("y = rnd(sin(x))", section),
+    () => makeEngine(() =>
+      [
+        makeOrb({
+          preUpdatePosition: function() {
+            this.pos.y = Math.round(Math.sin(this.pos.x))
+          },
+          speed: 500,
+          radius: .4
         })
       ],
       Math.PI * 4,
@@ -229,8 +250,39 @@ const steps = window.steps = [
       new Serpent({ engine })
     ],
     Math.PI * 6,
-    8
+    6
   ),
+
+  () => makeEngine(() => {
+    const eye1 = makeOrb({
+        preUpdatePosition: function(delta) {
+          this.pos.y = -1 * (2 + Math.sin(this.pos.x + Math.PI / 2) - 1);
+        },
+        startingPosition: (new Point(Math.PI / 2, 1)),
+        speed: 400,
+        radius: .4,
+        trace: false
+      });
+
+    const eye2 = makeOrb({
+        preUpdatePosition: function(delta) {
+          this.pos.y = -1 * (2 + Math.sin(this.pos.x + (4 * Math.PI - (Math.PI / 2))) - 1);
+        },
+        startingPosition: (new Point(4 * Math.PI - (Math.PI / 2), 1)),
+        speed: 400,
+        radius: .4,
+        trace: false
+      });
+
+    return [
+      new Penta({
+        closed: true,
+        engine
+      }),
+      eye1,
+      eye2
+    ];
+  }, Math.PI * 16, 10)
 ];
 
 

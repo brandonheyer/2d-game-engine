@@ -1,57 +1,53 @@
 import _ from "lodash";
 import { BaseEntity, Point } from '2d-engine';
+import BaseOrb, { FILLS } from "./BaseOrb";
 
 export default class BaseOrbs extends BaseEntity {
   constructor(options) {
     super(options);
 
-    this.pos = options.getOrbStartPositions ? options.getOrbStartPosition() : this.getOrbStartPositions();
+    const startingPoses = options.getOrbStartPositions ? options.getOrbStartPosition() : this.getOrbStartPositions();
 
+    this.startingXs = startingPoses.map(p => p.x);
+
+    this.orbs = [];
     this.lowX = Infinity;
     this.highX = -Infinity;
-
-    this.pos.forEach(p => {
-      this.lowX = Math.min(p.x, this.lowX);
-      this.highX = Math.max(p.x, this.highX);
-    });
-
-    this.fill = [
-      "#ffec9e",
-      "#ffc89e",
-      "#dedede",
-      "#00cc00",
-      "#cc00cc",
-      "#00cccc",
-      "#cccc00",
-    ];
-
+    this.fill = FILLS;
     this.time = 0;
     this.totalTime = 0;
 
-    this.preUpdateOrbPosition = options.preUpdateOrbPosition ?
-      options.preUpdateOrbPosition.bind(this) :
-      this.preUpdateOrbPosition;
+    startingPoses.forEach((p, i) => {
+      const orbOptions = options.orbOptions || {};
+      const radius = orbOptions.radius || this.radius;
 
-    this.postUpdateOrbPosition = options.postUpdateOrbPosition ?
-      options.postUpdateOrbPosition.bind(this) :
-      this.postUpdateOrbPosition;
+      this.startingXs[i] = p.x + (3 * radius);
 
-    this.updateOrbPosition = options.updateOrbPosition ?
-      options.updateOrbPosition.bind(this) :
-      this.updateOrbPosition;
+      this.lowX = Math.min(this.startingXs[i], this.lowX);
+      this.highX = Math.max(this.startingXs[i], this.highX);
 
-    this.radius = options.radius || 0.1;
-    this.timeReducer = options.timeReducer || 500;
-    this.timeReducer2 = options.timeReducer2 || 1000;
-    this.overflowScale = 1.05;
-    this.moveSlow = options.moveSlow || 500;
+      this.orbs.push(
+        new BaseOrb(
+          Object.assign(
+            {
+              engine: options.engine,
+              startingPosition: p,
+              radius
+            },
+            options.orbOptions || {}
+          )
+        )
+      );
+
+      this.orbs[this.orbs.length - 1].index = this.orbs.length - 1;
+    });
+
+    this.orbs.forEach(o => o.xMax += (this.highX - this.lowX));
+
     this.engine = options.engine;
-
     this.connect = options.connect || false;
+    this.open = !options.closed;
 
-    this.trace = options.trace || false;
-    this.tracerStroke = options.tracerStroke || "#663311";
-    this.tracerWidth = options.tracerWidth || 1;
   }
 
   getDefaultStartPosition() {
@@ -62,58 +58,34 @@ export default class BaseOrbs extends BaseEntity {
     return [];
   }
 
-  preUpdateOrbPosition(delta, orbPosition, orbIndex) {}
-  postUpdateOrbPosition(delta, orbPosition, orbIndex) {}
-
-  updateConnection(delta, orbPosition, ordIndex) {
-    if (this.connect) {
-      this.connection.transform = "none";
-      this.connection.vertices[ordIndex].x = this.xScale(orbPosition.x);
-      this.connection.vertices[ordIndex].y = this.yScale(orbPosition.y);
-    }
-  }
-
-  updateOrbPosition(delta, orbPosition, orbIndex) {
-    orbPosition.x += (delta / this.timeReducer2);
-    orbPosition.y = (orbPosition.y + (this.yMax / 2)) % this.yMax;
-
+  updateConnection(delta, orbPosition, orbIndex) {
     if (this.allOutOfBounds) {
-      const scaledRadius = this.radius * this.orbs[orbIndex].scale;
-      const orbLength = ((this.highX + scaledRadius) * this.overflowScale) - ((this.lowX - scaledRadius) * this.overflowScale)
-
-      orbPosition.x = -this.overflowScale * scaledRadius - (orbPosition.x % ((this.xMax + scaledRadius) * this.overflowScale));
+      orbPosition.x =  -1 * this.startingXs[orbIndex];
     }
 
-    for (let i = 0; i < this.orbs[orbIndex].children.length - 1; i++) {
-      const currOrb = this.orbs[orbIndex].children[i];
-
-      currOrb.scale = .75 + Math.abs(
-        Math.sin(
-          this.totalTime / 3 * speed * (1 + (i * 0.15))
-        )
-      ) * (1 + (i * 0.1));
+    if (this.connect) {
+      // this.connection.transform = "none";
+      this.connection.vertices[orbIndex].x = this.xScale(orbPosition.x);
+      this.connection.vertices[orbIndex].y = this.yScale(orbPosition.y);
     }
-
-    this.translateByPoint(orbPosition, this.orbs[orbIndex]);
-    this.updateConnection(delta, orbPosition, orbIndex);
   }
 
   update(delta) {
     this.time = (this.time + (delta / this.timeReducer)) % this.xMax;
     this.totalTime += delta / this.timeReducer;
 
-    this.pos.forEach(_.bind(this.preUpdateOrbPosition, this, delta));
-
-    this.allOutOfBounds = this.pos.every(
-      (p, i) => p.x > (this.xMax + (this.radius * this.orbs[i].scale)) * this.overflowScale
+    this.allOutOfBounds = this.orbs.every(
+      o => o.pos.x > (this.xMax + (o.radius * 2 * o.element.scale))
     );
 
-    this.pos.forEach(_.bind(this.updateOrbPosition, this, delta));
-    this.pos.forEach(_.bind(this.postUpdateOrbPosition, this, delta));
+    this.orbs.forEach(o => o.update(delta));
+
+    this.orbs.forEach((o, i) => this.updateConnection(delta, o.pos, i));
   }
 
   destroy() {
-    this.orbs.forEach(o => o.remove());
+    this.orbs.forEach(o => o.element.remove());
+    this.orbs = [];
 
     this.connect && this.connection.remove();
 
@@ -122,40 +94,26 @@ export default class BaseOrbs extends BaseEntity {
   }
 
   render(canvas) {
-    if (!this.element) {
-      this.element = canvas.makeGroup();
-      this.orbs = [];
+    this.element = canvas.makeGroup();
 
+    if (this.connect) {
       const points = [];
+      points.length = this.orbs.length * 2;
+      points.fill(0);
+      points.push(this.open);
 
-      this.pos.forEach((o, i) => {
-        points.push(0);
-        points.push(0);
+      this.connection = canvas.makePath.apply(canvas, points);
+      this.connection.fill = "none";
+      this.connection.stroke = "#cccccc"
+      this.connection.linewidth = 5;
 
-        this.orbs[i] = canvas.makeGroup();
-
-        let tempOrb = canvas.makeCircle(
-          this.xScale(0),
-          this.yScale(0),
-          this.xScale(this.radius)
-        );
-
-        tempOrb.fill = this.fill[i];
-        tempOrb.noStroke();
-
-        tempOrb.addTo(this.orbs[i]);
-      });
-
-      points.push(true);
-
-      if (this.connect) {
-        this.connection = canvas.makePath.apply(canvas, points);
-        this.connection.fill = "none";
-      }
-
-      this.orbs.forEach(o => o.addTo(this.element));
+      this.element.add(this.connection);
     }
 
-    this.connect && (this.connection.stroke = "#cccccc");
+    this.orbs.forEach(o => {
+      o.render(canvas);
+
+      this.element.add(o.element);
+    });
   }
 }
