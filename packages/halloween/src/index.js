@@ -4,7 +4,6 @@ import $ from "jquery";
 import {Point} from "2d-engine";
 
 import Engine from "./engine/Engine";
-import Tracer from "./entities/Tracer";
 import DualOrbs from "./entities/DualOrbs";
 import Serpent from "./entities/Serpent";
 import Penta from "./entities/Penta";
@@ -35,18 +34,6 @@ function updateEntityOptions() {
     preUpdate: defaultPreUpdate,
     updateXPos: defaultUpdateXPos
   };
-}
-
-function addEntity(options) {
-  options = options || {};
-
-  engine.addEntity(
-    new Tracer(Object.assign(
-      {},
-      entityOptions,
-      options
-    ))
-  );
 }
 
 const width = 1400;
@@ -284,43 +271,3 @@ const steps = window.steps = [
     ];
   }, Math.PI * 16, 10)
 ];
-
-
-
-
-// addEntity({
-//   updateYPos: function(delta) {
-//     this.pos.y = eval("Math.round(Math.sin(this.time) * 10) / 10");
-//   },
-//   fill: "#ff00ff"
-// });
-//
-// addEntity({
-//   updateYPos: function(delta) {
-//     this.pos.y = Math.round(Math.sin(this.time));
-//   },
-//   fill: "#cccc00"
-// });
-//
-// addEntity({
-//   updateYPos: function(delta) {
-//     this.pos.y = -1 * Math.abs(Math.sin(this.time));
-//   },
-//   fill: "#444400"
-// });
-//
-// $(".formula").on("change", _.debounce(function(e) {
-//   let newFormula = e.target.value || "";
-//   newFormula = newFormula.replace(
-//     /([\( ]?)(x|y)([ \)]?)|x/ig,
-//     function(match, r, v, l) {
-//       return `${r}this.pos.${v}${l}`;
-//     }
-//   );
-//
-//   engine.entities[0].updateYPos = (function(delta) {
-//     this.pos.y = eval(newFormula)
-//   }).bind(engine.entities[0]);
-// }, 100));
-//
-// $(".formula").keydown(e => e.stopImmediatePropagation());
