@@ -12,6 +12,7 @@ export default class Serpent extends BaseOrbs {
               this.pos.y = ((this.index % 2) ? -1 : 1) * 2 * Math.sin(this.pos.x / 2);
             },
             trace: false,
+            connect: options.connect,
             radius: .4,
             speed: 400
           }
@@ -19,6 +20,8 @@ export default class Serpent extends BaseOrbs {
         options
       )
     );
+
+    this.orbOpacity = options.orbOpacity === undefined ? 1 : options.orbOpacity;
   }
 
   getOrbStartPositions() {
@@ -39,6 +42,8 @@ export default class Serpent extends BaseOrbs {
   render(canvas) {
     super.render(canvas);
 
-    this.connection.curved = true;
+    this.connect && (this.connection.curved = true);
+
+    this.orbs.forEach(o => o.element.opacity = this.orbOpacity);
   }
 }

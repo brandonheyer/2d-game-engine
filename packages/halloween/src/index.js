@@ -93,6 +93,18 @@ const steps = window.steps = [
     }
   ],
 
+  [
+    (section) => {
+      addAnimatedHeader("x = 0", section);
+      addAnimatedHeader("y = 0", section);
+    },
+    () => makeEngine(() => [
+      makeOrb({
+        preUpdatePosition: function() { this.pos.y = 0; this.pos.x = Math.PI / 4; }
+      })
+    ], Math.PI / 2)
+  ],
+
   // Straight Line
   [
     (section) => {
@@ -234,21 +246,32 @@ const steps = window.steps = [
 
   () => makeEngine(() =>
     [
-      new Serpent({ engine })
+      new Serpent({ engine, connect: false })
     ],
     Math.PI * 6,
     6
   ),
 
-  () => makeEngine(() => {
+  () => makeEngine(() =>
+    [
+      new Serpent({ engine, connect: true, orbOpacity: 0 })
+    ],
+    Math.PI * 6,
+    6
+  ),
+
+  (section) => makeEngine(() => {
+    section.append("<h2>Thank you!</h2>");
     const eye1 = makeOrb({
         preUpdatePosition: function(delta) {
           this.pos.y = -1 * (2 + Math.sin(this.pos.x + Math.PI / 2) - 1);
         },
         startingPosition: (new Point(Math.PI / 2, 1)),
-        speed: 400,
-        radius: .4,
-        trace: false
+        speed: 200,
+        radius: 2,
+        trace: false,
+        kickback: false,
+        fill: "#8C0303"
       });
 
     const eye2 = makeOrb({
@@ -256,16 +279,23 @@ const steps = window.steps = [
           this.pos.y = -1 * (2 + Math.sin(this.pos.x + (4 * Math.PI - (Math.PI / 2))) - 1);
         },
         startingPosition: (new Point(4 * Math.PI - (Math.PI / 2), 1)),
-        speed: 400,
-        radius: .4,
-        trace: false
+        speed: 200,
+        radius: 2,
+        trace: false,
+        kickback: false,
+        fill: "#8C0303"
       });
 
+    const penta = new Penta({
+      closed: true,
+      engine
+    });
+
+    eye1.xMax += (penta.highX - penta.lowX) / (Math.PI / 2);
+    eye2.xMax += (penta.highX - penta.lowX) / (Math.PI / 2);
+
     return [
-      new Penta({
-        closed: true,
-        engine
-      }),
+      penta,
       eye1,
       eye2
     ];

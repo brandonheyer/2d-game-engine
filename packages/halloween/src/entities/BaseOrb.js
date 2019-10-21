@@ -2,13 +2,13 @@ import _ from "lodash";
 import { BaseEntity, Point } from '2d-engine';
 
 export const FILLS = [
-  "#ffec9e",
-  "#ffc89e",
-  "#dedede",
-  "#00cc00",
-  "#cc00cc",
-  "#00cccc",
-  "#cccc00",
+  "#F2D16D",
+  "#CF1F9F",
+  "#F29C50",
+  "#A9C2D9",
+  "#F27649",
+  "#F28705",
+  "#9592A6",
 ];
 
 let instances = 0;
@@ -36,14 +36,22 @@ export default class BaseOrbs extends BaseEntity {
     this.glowSlow = options.glowSlow || .5;
     this.glowOrbs = options.glowOrbs || 6;
     this.engine = options.engine;
+    this.fill = options.fill || FILLS[this.instance % FILLS.length];
 
     this.trace = options.trace === undefined ? true : options.trace;
-    this.tracerStroke = options.tracerStroke || "#663311";
+    this.tracerStroke = options.tracerStroke || FILLS[this.instance % FILLS.length];
     this.tracerWidth = options.tracerWidth || (this.radius * .1);
 
     this.glowSpeed = Math.floor(Math.random() * 50 + 50) / (25 * this.glowSlow);
 
-    this.totalTime = this.time = -2 * this.radius;
+    this.kickback = options.kickback;
+    if (options.kickback !== false) {
+      this.totalTime = this.time = -2 * this.radius;
+    }
+    else {
+      this.totalTime = this.time = -2 * .4;
+    }
+
     this.pos.x = this.time - (this.pos.x || 0);
   }
 
@@ -59,7 +67,12 @@ export default class BaseOrbs extends BaseEntity {
     }
 
     if (this.pos.x > this.xMax + (this.radius * 3)) {
-      this.pos.x = -2 * this.radius;
+      if (this.kickback !== false) {
+        this.pos.x = -2 * this.radius;
+      }
+      else {
+        this.pos.x = -2 * .4;
+      }
     }
 
     for (let i = 0; i < this.glowGroup.children.length - 1; i++) {
@@ -96,6 +109,10 @@ export default class BaseOrbs extends BaseEntity {
 
       this.pathElement.vertices.push(anchor);
     }
+
+    if (this.trace) {
+      this.pathElement.opacity = .25 + Math.abs((Math.sin(this.totalTime) / 3));
+    }
   }
 
   addPath() {
@@ -107,6 +124,7 @@ export default class BaseOrbs extends BaseEntity {
     this.pathElement.fill = "none";
     this.pathElement.stroke = this.tracerStroke;
     this.pathElement.linewidth = this.xScale(this.tracerWidth);
+    this.pathElement.opacity = .25;
 
     this.drawPath = 2;
   }
@@ -130,7 +148,7 @@ export default class BaseOrbs extends BaseEntity {
       );
 
       tempOrb.noStroke();
-      tempOrb.fill = FILLS[this.instance % FILLS.length];
+      tempOrb.fill = this.fill;
       tempOrb.opacity = j * 0.02;
 
       tempOrb.addTo(this.glowGroup);
@@ -142,7 +160,7 @@ export default class BaseOrbs extends BaseEntity {
       this.xScale(this.radius)
     );
 
-    tempOrb.fill = FILLS[this.instance  % FILLS.length];
+    tempOrb.fill = this.fill;
     tempOrb.noStroke();
 
     this.glowGroup.addTo(this.element);

@@ -16,6 +16,7 @@ export default class BaseOrbs extends BaseEntity {
     this.fill = FILLS;
     this.time = 0;
     this.totalTime = 0;
+    this.speed = 400;
 
     startingPoses.forEach((p, i) => {
       const orbOptions = options.orbOptions || {};
@@ -71,8 +72,8 @@ export default class BaseOrbs extends BaseEntity {
   }
 
   update(delta) {
-    this.time = (this.time + (delta / this.timeReducer)) % this.xMax;
-    this.totalTime += delta / this.timeReducer;
+    this.time = (this.time + (delta / this.speed)) % this.xMax;
+    this.totalTime += delta / this.speed;
 
     this.allOutOfBounds = this.orbs.every(
       o => o.pos.x > (this.xMax + (o.radius * 2 * o.element.scale))

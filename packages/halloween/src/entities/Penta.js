@@ -33,7 +33,7 @@ export default class Serpent extends BaseOrbs {
             },
             trace: false,
             radius: .4,
-            speed: 400
+            speed: 200
           }
         },
         options
@@ -62,12 +62,7 @@ export default class Serpent extends BaseOrbs {
   update(delta) {
     super.update(delta);
 
-    const newGroup = this.engine.canvas.makeGroup();
-    const order = [];
-
-    this.orbs.forEach(o => {
-
-    });
+    this.element.opacity = Math.sin((this.time - (Math.PI * 2)) / 2);
   }
 
   render(canvas) {

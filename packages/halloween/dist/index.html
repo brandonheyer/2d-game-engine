@@ -88,40 +88,32 @@
         margin: 0 auto;
         width: 1400px;
         height: 850px;
-        padding: 3em 1em;
       }
 
       section {
+        padding: 3em 1em;
         box-sizing: border-box;
         background-color: #101010;
         position: relative;
       }
 
-      .fk-canvas {
+      .fk-container {
         position: fixed;
         top: 0;
         left: 0;
+        width: 100%;
+        height: 100%;
       }
 
       .fk-canvas svg {
         position: absolute;
-        top: 0;
-        left: 3em;
-      }
-
-      .lightning {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        background: #ffffff;
-        opacity: 0;
       }
     </style>
   </head>
   <body>
-    <div class="fk-canvas"> </div>
+    <div class="fk-container">
+      <div class="fk-canvas"> </div>
+    </div>
 
     <script src="js/index.min.js"> </script>
     <script>
@@ -134,44 +126,10 @@
       let subStep = -1;
 
       for (let i = 0; i < window.steps.length; i++) {
-        $(".fk-canvas").before("<section>");
+        $(".fk-container").before("<section>");
       }
 
       const sections = $("section");
-
-      // const lightning = $("<div class='lightning'></div>").appendTo(sections.eq(0));
-      // const lightning2 = $("<div class='lightning'></div>").appendTo(sections.eq(0));
-
-      // const sectionDefs = [
-      //   (currSection) => {
-          // const op1 = { opacity: 1 };
-          // const op0 = { opacity: 0 };
-          //
-          // function animateLightning(l) {
-          //   l.animate(op1, (Math.random() * 50) + 30, "easeOutSine")
-          //     .animate(op0, 1)
-          //     .animate(op0, (Math.random() * 400) + 50);
-          // }
-          //
-          // setTimeout(() => {
-          //   animateLightning(lightning2);
-          //   animateLightning(lightning2);
-          //   animateLightning(lightning2);
-          //   animateLightning(lightning2);
-          //   animateLightning(lightning2);
-          //
-          //   animateLightning(lightning);
-          //   animateLightning(lightning);
-          //   animateLightning(lightning);
-          //   animateLightning(lightning);
-          //   animateLightning(lightning);
-          // }, 5000);
-      //   },
-      //   () => {
-      //
-      //   }
-      // ];
-
       function updateParams() {
         var res = '';
 
