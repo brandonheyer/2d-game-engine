@@ -4,37 +4,27 @@ import $ from "jquery";
 import {Point} from "2d-engine";
 
 import Engine from "./engine/Engine";
-import BaseBoid from "./entities/BaseBoid";
 import DualOrbs from "./entities/DualOrbs";
 import Serpent from "./entities/Serpent";
+import Penta from "./entities/Penta";
 
-const defaultParams = params = {
-
-};
+import BaseOrb from "./entities/BaseOrb";
 
 var entityOptions;
 var engine;
 
-var query = window.location.hash.substring(1);
-var params = populateFromParams();
-
-function populateFromParams() {
-  params = _.clone(defaultParams);
-
-  query.split('&').forEach(function(p) {
-    p = p.split('=');
-    params[p[0]] = parseFloat(p[1] || 0, 10);
-  });
-
-  return params;
-}
-
 function defaultPreUpdate(delta) {
-  this.time = (this.time + (delta / 500)) % 6.2832;
+  this.totalTime += delta / this.moveSlow;
+
+  if (this.totalTime > (6.2832 + this.radius) * 1.05) {
+    this.totalTime = -1 * this.radius * 1.05;
+  }
+
+  this.time = this.totalTime % 6.2832;
 }
 
 function defaultUpdateXPos(delta) {
-  this.pos.x += delta / 1000;
+  this.pos.x = this.totalTime;
 }
 
 function updateEntityOptions() {
@@ -46,104 +36,268 @@ function updateEntityOptions() {
   };
 }
 
-function addEntity(options) {
-  options = options || {};
-
-  engine.addEntity(
-    new BaseBoid(Object.assign(
-      {},
-      entityOptions,
-      options
-    ))
-  );
-}
-
-function updateParams() {
-  var res = '';
-
-  for (var prop in params) {
-    if (params.hasOwnProperty(prop)) {
-      res += '&' + prop + '=' + params[prop];
-    }
-  }
-
-  window.location.hash = res.substring(0);
-}
-
-var width = $('body').width();
-var height = $('body').height();
-
-engine = new Engine(
-  '.fk-canvas',
-  width, height,
-  6.28319 * 4, 8,
-  {
-    trackFPS: true,
-    displayFPS: $('.fk-fps')
-  }
-);
+const width = 1400;
+const height = 850;
 
 updateEntityOptions();
 
-// addEntity({
-//   updateYPos: function(delta) {
-//     this.pos.y = 0;
-//   },
-//   fill: "#444444"
-// });
+window.preTransition = () => {
+  if (engine) {
+    engine.clear();
+    engine.canvas.remove();
+  }
+};
 
-engine.addEntity(
-  new DualOrbs({ engine })
-);
+function addAnimatedHeader(content, section, tag = "h2") {
+  const h = $(`<${tag}>${content}</${tag}>`)
+    .css({ opacity: 0 })
+    .appendTo(section);
 
-// engine.addEntity(
-//   new Serpent({ engine })
-// );
+  setTimeout(() => h.animate({ opacity : 1 }));
+}
 
-// addEntity({
-//   updateYPos: function(delta) {
-//     this.pos.y = eval("Math.round(Math.sin(this.time) * 10) / 10");
-//   },
-//   fill: "#ff00ff"
-// });
-//
-// addEntity({
-//   updateYPos: function(delta) {
-//     this.pos.y = Math.sin(this.time);
-//   },
-//   fill: "#333333"
-// });
-
-// addEntity({
-//   updateYPos: function(delta) {
-//     this.pos.y = Math.round(Math.sin(this.time));
-//   },
-//   fill: "#cccc00"
-// });
-//
-// addEntity({
-//   updateYPos: function(delta) {
-//     this.pos.y = -1 * Math.abs(Math.sin(this.time));
-//   },
-//   fill: "#444400"
-// });
-
-engine.start();
-
-$('.fk-stop').on('click', engine.stop.bind(engine));
-$('.fk-start').on('click', engine.start.bind(engine));
-$(".formula").on("change", _.debounce(function(e) {
-  let newFormula = e.target.value || "";
-  newFormula = newFormula.replace(
-    /([\( ]?)(x|y)([ \)]?)|x/ig,
-    function(match, r, v, l) {
-      return `${r}this.pos.${v}${l}`;
-    }
+function makeEngine(entities, engineWidth = Math.PI, engineHeight = 1) {
+  engine = new Engine(
+    '.fk-canvas',
+    width,
+    height,
+    engineWidth,
+    engineHeight
   );
 
-  engine.entities[0].updateYPos = (function(delta) {
-    this.pos.y = eval(newFormula)
-  }).bind(engine.entities[0]);
-}, 100));
+  entities().forEach(e => engine.addEntity(e));
 
-$(".formula").keydown(e => e.stopImmediatePropagation());
+  engine.start();
+}
+
+function makeOrb(options) {
+  return new BaseOrb(
+    Object.assign(
+      {
+        engine,
+        radius: .2,
+        speed: 1000
+      },
+      options
+    )
+  );
+}
+
+const steps = window.steps = [
+  // Intro
+  [
+    () => {},
+    (section) => {
+      addAnimatedHeader("ARCANE ANIMATION:", section, "h1");
+      addAnimatedHeader("<span>The</span> Sinister Sine", section);
+    }
+  ],
+
+  [
+    (section) => {
+      addAnimatedHeader("x = 0", section);
+      addAnimatedHeader("y = 0", section);
+    },
+    () => makeEngine(() => [
+      makeOrb({
+        preUpdatePosition: function() { this.pos.y = 0; this.pos.x = Math.PI / 4; }
+      })
+    ], Math.PI / 2)
+  ],
+
+  // Straight Line
+  [
+    (section) => {
+      addAnimatedHeader("x-axis is time", section);
+    },
+    (section) => {
+      addAnimatedHeader("x = x + &Delta;", section);
+      addAnimatedHeader("y = 0", section);
+    },
+    () => makeEngine(() => [
+      makeOrb({
+        preUpdatePosition: function() { this.pos.y = 0 }
+      })
+    ])
+  ],
+
+  // With 1 Sine Wave
+  [
+    (section) => addAnimatedHeader("y = sin(x)", section),
+    () => makeEngine(() =>
+      [
+        makeOrb({
+          preUpdatePosition: function() {
+            this.pos.y = Math.sin(this.pos.x);
+          },
+          speed: 750,
+          radius: .3
+        })
+      ],
+      2 * Math.PI,
+      3
+    )
+  ],
+
+  // abs(sin)
+  [
+    (section) => addAnimatedHeader("y = |sin(x)|", section),
+    () => makeEngine(() =>
+      [
+        makeOrb({
+          preUpdatePosition: function() {
+            this.pos.y = -1 * Math.abs(Math.sin(this.pos.x))
+          },
+          speed: 500,
+          radius: .4
+        })
+      ],
+      Math.PI * 4,
+      3
+    )
+  ],
+
+  // round(sin)
+  [
+    (section) => addAnimatedHeader("y = rnd(sin(x))", section),
+    () => makeEngine(() =>
+      [
+        makeOrb({
+          preUpdatePosition: function() {
+            this.pos.y = Math.round(Math.sin(this.pos.x))
+          },
+          speed: 500,
+          radius: .4
+        })
+      ],
+      Math.PI * 4,
+      3
+    )
+  ],
+
+  [
+    (section) => {
+      addAnimatedHeader("y  = sin(x)", section, "h3");
+      addAnimatedHeader("y  = sin(2x)", section, "h3");
+      addAnimatedHeader("y  = sin(3x)", section, "h3");
+    },
+    () => makeEngine(() =>
+      [
+        makeOrb({
+          preUpdatePosition: function() {
+            this.pos.y = Math.sin(this.pos.x);
+          },
+          radius: .15,
+          speed: 1000
+        }),
+        makeOrb({
+          preUpdatePosition: function() {
+            this.pos.y = Math.sin(2 * this.pos.x);
+          },
+          radius: .15,
+          speed: 1000
+        }),
+        makeOrb({
+          preUpdatePosition: function() {
+            this.pos.y = Math.sin(3 * this.pos.x);
+          },
+          radius: .15,
+          speed: 1000
+        })
+      ],
+      Math.PI * 2,
+      3
+    )
+  ],
+
+  // Sine and -Sine
+  [
+    (section) => {
+      addAnimatedHeader("y = sin(x)", section);
+      addAnimatedHeader("y = -sin(x)", section);
+    },
+    () => makeEngine(() =>
+      [
+        makeOrb({
+          preUpdatePosition: function(delta) {
+            this.pos.y = Math.sin(this.pos.x);
+          },
+          radius: .15
+        }),
+        makeOrb({
+          preUpdatePosition: function(delta) {
+            this.pos.y = -1 * Math.sin(this.pos.x);
+          },
+          radius: .15
+        })
+      ],
+      Math.PI * 2,
+      3
+    )
+  ],
+
+  () => makeEngine(() =>
+    [
+      new DualOrbs({ engine })
+    ],
+    Math.PI * 6,
+    8
+  ),
+
+  () => makeEngine(() =>
+    [
+      new Serpent({ engine, connect: false })
+    ],
+    Math.PI * 6,
+    6
+  ),
+
+  () => makeEngine(() =>
+    [
+      new Serpent({ engine, connect: true, orbOpacity: 0 })
+    ],
+    Math.PI * 6,
+    6
+  ),
+
+  (section) => makeEngine(() => {
+    section.append("<h2>Thank you!</h2>");
+    const eye1 = makeOrb({
+        preUpdatePosition: function(delta) {
+          this.pos.y = -1 * (2 + Math.sin(this.pos.x + Math.PI / 2) - 1);
+        },
+        startingPosition: (new Point(Math.PI / 2, 1)),
+        speed: 200,
+        radius: 2,
+        trace: false,
+        kickback: false,
+        fill: "#8C0303"
+      });
+
+    const eye2 = makeOrb({
+        preUpdatePosition: function(delta) {
+          this.pos.y = -1 * (2 + Math.sin(this.pos.x + (4 * Math.PI - (Math.PI / 2))) - 1);
+        },
+        startingPosition: (new Point(4 * Math.PI - (Math.PI / 2), 1)),
+        speed: 200,
+        radius: 2,
+        trace: false,
+        kickback: false,
+        fill: "#8C0303"
+      });
+
+    const penta = new Penta({
+      closed: true,
+      engine
+    });
+
+    eye1.xMax += (penta.highX - penta.lowX) / (Math.PI / 2);
+    eye2.xMax += (penta.highX - penta.lowX) / (Math.PI / 2);
+
+    return [
+      penta,
+      eye1,
+      eye2
+    ];
+  }, Math.PI * 16, 10)
+];

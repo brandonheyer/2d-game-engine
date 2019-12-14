@@ -1,42 +1,259 @@
 <html>
   <head>
-    <title>Flocking</title>
-
+    <title>Arcane Animation: This Sinister Sine</title>
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Permanent+Marker|Volkhov:700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="normalize.css" />
     <style>
+      html, body {
+         pointer-events: none;
+      }
+
       body {
         padding: 0;
         background: #000000;
+        padding-bottom: 20%;
+        pointer-events: none;
       }
 
-      .fk-controls {
+      h1, h2, h3 {
+        text-align: center;
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 3em;
+        font-family: "Volkhov";
+        color: #731D09;
+        line-height: 1em;
+        margin: 0;
+        padding-top: 3em;
+        letter-spacing: 6px;
+      }
+
+      h2, h3 {
+        position: relative;
+        top: -.9em;
+        font-size: 12em;
+        font-family: "Permanent Marker";
+        color: #8C3503;
+        line-height: 1em;
+        margin-top: 0;
+        transform: rotate(-5deg);
+        text-shadow: 4px 4px 1px #731D09;
+        padding-top: 0;
+        margin-bottom: 0;
+        transform-origin: bottom;
+      }
+
+      h3 {
+        font-size: 10em;
+        line-height: 1.2em;
+      }
+
+      h2:first-child {
+        padding-top: 1.5em;
+        margin-bottom: 0;
+      }
+
+      h2:first-child:last-child {
+        padding-top: 2em;
+      }
+
+      h3:first-child {
+        padding-top: 1.125em;
+        margin-bottom: 0;
+      }
+
+      h2 sub {
+        text-transform: sub;
+        font-size: .5em;
+      }
+
+      h2 span {
+        font-size: .5em;
+        display:block;
+        position: relative;
+        left: -4em;
+        top: 1em;
+      }
+
+      section,
+      .fk-canvas {
+        margin: 0 auto;
+        width: 1400px;
+        height: 850px;
+      }
+
+      section {
+        padding: 3em 1em;
+        box-sizing: border-box;
+        background-color: #101010;
+        position: relative;
+      }
+
+      .fk-container {
         position: fixed;
         top: 0;
+        left: 0;
+        width: 100%;
         height: 100%;
-        right: 0;
-        font-size: 16px;
-        padding-right: 2em;
+      }
+
+      .fk-canvas svg {
+        position: absolute;
       }
     </style>
-    <link rel="stylesheet" href="normalize.css" />
   </head>
   <body>
-    <div class="fk-canvas"> </div>
-
-    <div class="fk-controls">
-      <ul>
-        <li>
-          <label>FPS</label>
-          <span class="fk-fps"> </span>
-        </li>
-        <li>
-          <label>Formula</label>
-          <span>
-            <input class="formula" type="text"> </input>
-          </span>
-        </li>
-      </ul>
+    <div class="fk-container">
+      <div class="fk-canvas"> </div>
     </div>
 
     <script src="js/index.min.js"> </script>
+    <script>
+      const verticalMargin = window.verticalMargin = ($(window).outerHeight() - 850) / 2;
+      const body = $("body");
+      const params = {};
+
+      let currStepDef;
+      let curr;
+      let subStep = -1;
+
+      for (let i = 0; i < window.steps.length; i++) {
+        $(".fk-container").before("<section>");
+      }
+
+      const sections = $("section");
+      function updateParams() {
+        var res = '';
+
+        for (var prop in params) {
+          if (params.hasOwnProperty(prop)) {
+            res += '&' + prop + '=' + params[prop];
+          }
+        }
+
+        window.location.hash = res.substring(0);
+      }
+
+      function transitionTo() {
+        const currSection = $("section").eq(curr);
+        let nextCall = currStepDef = window.steps[curr];
+
+        if (currStepDef[subStep]) {
+          nextCall = currStepDef[subStep];
+        }
+        else {
+          subStep = -1;
+        }
+
+        if (subStep <= 0) {
+          window.preTransition();
+          $("body").animate(
+            {
+              scrollTop: currSection.offset().top - verticalMargin,
+            },
+            500,
+            "easeInSine",
+            () => {
+              if (Array.isArray(nextCall)) {
+                subStep = 0;
+                nextCall[subStep]($(sections[curr]));
+              }
+              else {
+                nextCall($(sections[curr]));
+              }
+            },
+            false
+          );
+        }
+        else {
+          window.preTransition();
+          nextCall($(sections[curr]));
+        }
+      }
+
+      window.location.hash.substring(1).split('&').forEach(function(p) {
+        p = p.split('=');
+        params[p[0]] = parseFloat(p[1] || 0, 10);
+      });
+      curr = params.curr || 0;
+
+      sections.css({ marginTop: verticalMargin, marginBottom: verticalMargin });
+      $(".fk-canvas").css({ marginTop: verticalMargin, marginBottom: verticalMargin });
+
+      $("body").keyup((event) => {
+        let go = true;
+        const startCurr = curr;
+
+        switch(event.keyCode) {
+          case 32:
+          case 39:
+            if (Array.isArray(currStepDef) && currStepDef[subStep + 1]) {
+              subStep++;
+            } else {
+              curr = (curr >= sections.length - 1) ? curr : curr + 1;
+              subStep = -1;
+            }
+            break;
+
+          case 37:
+            curr = curr ? (curr - 1) : 0;
+            subStep = -1;
+            break;
+
+          default:
+            go = false;
+        }
+
+        if (go) {
+          const children = $(sections[startCurr]).children();
+
+          if (children.length) {
+            children.each((i, el) =>
+              $(el).animate({ opacity: 0}, 200, () => {
+                $(el).remove();
+
+                if (i === children.length - 1) {
+                  transitionTo();
+                }
+              })
+            );
+          }
+          else {
+            transitionTo();
+          }
+
+          params.curr = curr;
+          updateParams();
+        }
+
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        return false;
+      }).keydown(event => {
+        switch(event.keyCode) {
+          case 40:
+          case 38:
+          case 32:
+            event.preventDefault();
+            break;
+
+          default:
+            console.log(event.keyCode);
+        }
+      });
+
+      setTimeout(transitionTo, 250);
+
+      document.addEventListener("wheel", (e) => e.preventDefault(), { passive: false });
+    </script>
   </body>
 </html>
