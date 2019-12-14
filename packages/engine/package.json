@@ -1,7 +1,7 @@
 {
   "name": "2d-engine",
   "version": "5.3.0",
-  "description": "A game engine in two using D3 and writtin in ES6",
+  "description": "An ES6 game engine using two.js",
   "main": "src/index",
   "repository": {
     "type": "git",
@@ -13,7 +13,6 @@
     "engine",
     "es6",
     "babel",
-    "d3",
     "visualization"
   ],
   "author": {
@@ -33,7 +32,6 @@
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
     "coveralls": "^3.0.0",
-    "d3": "^5.9.2",
     "eslint": "^4.12.1",
     "event-pubsub": "^4.3.0",
     "istanbul": "^0.4.5",
