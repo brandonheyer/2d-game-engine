@@ -2,7 +2,6 @@ import BaseEntity from './BaseEntity';
 
 import Engine from './Engine';
 import TwoEngine from './TwoEngine';
-import SVGEngine from './SVGEngine';
 
 import Generator from './Generator';
 
@@ -24,7 +23,6 @@ export {
 
   Engine,
   TwoEngine,
-  SVGEngine,
 
   Generator,
 
