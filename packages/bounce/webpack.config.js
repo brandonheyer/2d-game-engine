@@ -7,7 +7,7 @@ module.exports = {
     filename: 'index.min.js'
   },
   mode: "development",
-  devtool: "eval-source-map",
+  devtool: "source-map",
   module: {
     rules: [
       {
