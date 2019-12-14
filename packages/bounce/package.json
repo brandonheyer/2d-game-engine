@@ -8,21 +8,15 @@
     "name": "Brandon Heyer",
     "email": "brandonheyer@gmail.com"
   },
+  "private": true,
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/brandonheyer/2d-engine/issues"
   },
   "homepage": "https://github.com/brandonheyer/2d-engine#readme",
   "dependencies": {},
-  "devDependencies": {
-    "2d-engine": "*",
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.5",
-    "@babel/preset-env": "^7.4.5",
-    "babel-loader": "^8.0.6",
-    "jquery": "^3.4.1",
-    "webpack": "^4.32.2",
-    "webpack-cli": "^3.3.2"
+  "peerDependencies": {
+    "2d-engine": "*"
   },
   "scripts": {}
 }

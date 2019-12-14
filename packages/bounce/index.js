@@ -1,9 +1,9 @@
 import $ from 'jquery';
 import { TwoEngine, random, seedrandom } from '2d-engine';
 
-import BallEntity from './BallEntity';
+import BallEntity from './ball-entity';
 
-const STARTING_COUNT = 100;
+const STARTING_COUNT = 500;
 
 const engine = new TwoEngine(
   '.canvas',

@@ -8,6 +8,9 @@ module.exports = {
   },
   mode: "development",
   devtool: "source-map",
+  externals: {
+    "2d-engine": "TwoDeeEngine"
+  },
   module: {
     rules: [
       {

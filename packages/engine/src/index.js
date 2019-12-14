@@ -14,6 +14,7 @@ import separation from "./forces/separation";
 import bounce from "./forces/bounce";
 import boundaryReflect from "./forces/boundary-reflect";
 import gravity from "./forces/gravity";
+import { initKillWhenStable, killWhenStable } from "./forces/kill-when-stable";
 
 import seedrandom from "seedrandom";
 import random from "random";
@@ -35,6 +36,9 @@ export {
   bounce,
   boundaryReflect,
   gravity,
+
+  initKillWhenStable,
+  killWhenStable,
 
   seedrandom,
   random

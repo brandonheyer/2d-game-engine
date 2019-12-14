@@ -3,11 +3,7 @@ import {
   Vector,
   BaseEntity,
   random,
-  seedrandom,
-  separation,
-  bounce,
-  boundaryReflect,
-  gravity
+  seedrandom
 } from "2d-engine";
 
 const BALL_RADIUS_MIN = 2;
@@ -23,13 +19,7 @@ let magnitudeSq = 0;
 let magnitude = 0;
 let minDistanceSq = 0;
 let minDistance = 0;
-let dot = 0;
-let pushDistance = new Vector(0, 0);
-let other;
-let pushScalar = 0;
 let i = 0;
-let posPartdiff = 0;
-let myIndex = 0;
 
 export default class BallEntity extends BaseEntity {
   constructor(options) {
@@ -39,12 +29,10 @@ export default class BallEntity extends BaseEntity {
   }
 
   initializeProperties(options) {
+    this.dead = false;
     this.engine = options.engine;
     this.radius = rngRadius();
     this.mass = this.radius;
-    this.mags = [];
-    this.mags.length = 100;
-    this.magI = 0;
 
     super.initializeProperties(options);
   }
@@ -56,55 +44,34 @@ export default class BallEntity extends BaseEntity {
     );
   }
 
-  handleOther(delta) {
-    other = this.entities[i];
+  updateWithOther(delta, other) {
+    tempVector.x = this.pos.x - other.pos.x;
+    tempVector.y = this.pos.y - other.pos.y;
 
-    // if (!this.dead && this.index !== i) {
-    if (this.index !== i) {
-      // 260.6
-      tempVector.x = this.pos.x - other.pos.x;
-      tempVector.y = this.pos.y - other.pos.y;
+    magnitudeSq = tempVector.magnitudeSq();
+    minDistance = this.radius + other.radius;
+    minDistanceSq = minDistance * minDistance;
 
-      magnitudeSq = tempVector.magnitudeSq();
-      minDistance = this.radius + other.radius;
-      minDistanceSq = minDistance * minDistance;
+    if (magnitudeSq < minDistanceSq) {
+      magnitude = Math.sqrt(magnitudeSq);
 
-      if (magnitudeSq < minDistanceSq) {
-        magnitude = Math.sqrt(magnitudeSq);
+      normalizedVector.x = tempVector.x / magnitude;
+      normalizedVector.y = tempVector.y / magnitude;
 
-        normalizedVector.x = tempVector.x / magnitude;
-        normalizedVector.y = tempVector.y / magnitude;
-
-        separation(this, other, normalizedVector, magnitude);
-        bounce(this, other, normalizedVector);
-      }
+      this.onCollision(other, normalizedVector, magnitude);
     }
   }
 
   update(delta) {
     for (i = 0; i < this.entities.length; i++) {
-      this.handleOther(delta);
+      if (this.index !== i) {
+        this.updateWithOther(delta, this.entities[i]);
+      }
     }
 
+    this.preUpdatePosition(delta);
     this.updatePosition(delta);
-  }
-
-  translate() {
-    if (!this.dead) {
-      if (
-        Math.abs(this.xScale(this.pos.x) - this.element.translation.x) +
-        Math.abs(this.yScale(this.pos.y) - this.element.translation.y) < 1
-      ) {
-        this.magI++;
-      }
-      else if (this.magI > 0){
-        this.magI--;
-      }
-
-      if (this.magI > 100) {
-        this.dead = true;
-      }
-    }
+    this.postUpdatePosition();
 
     this.element.translation.set(
       this.xScale(this.pos.x),
@@ -112,15 +79,13 @@ export default class BallEntity extends BaseEntity {
     );
   }
 
+  preUpdatePosition(delta) {}
+
   updatePosition(delta) {
-    gravity(this, delta);
-
     this.pos.plusEquals(this.heading);
-
-    boundaryReflect(this);
-
-    this.translate();
   }
+
+  postUpdatePosition() {}
 
   render(canvas) {
     this.element = canvas.makeCircle(

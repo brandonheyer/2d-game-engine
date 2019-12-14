@@ -6,6 +6,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {},
+  "private": true,
   "devDependencies": {
     "2d-engine": "*",
     "@babel/cli": "^7.4.4",

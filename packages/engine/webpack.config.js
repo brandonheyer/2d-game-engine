@@ -4,7 +4,8 @@ module.exports = {
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '2d-engine.js'
+    filename: '2d-engine.js',
+    library: "TwoDeeEngine"
   },
   mode: "development",
   module: {
