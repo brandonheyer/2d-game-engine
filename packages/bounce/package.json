@@ -17,6 +17,8 @@
     "2d-engine": "*",
     "jquery": "^3.4.1"
   },
-  "scripts": {},
+  "scripts": {
+    "prepare": "webpack-cli"
+  },
   "gitHead": "b91bfe1c3ed8e17079c491911465e94e3bc80d39"
 }
