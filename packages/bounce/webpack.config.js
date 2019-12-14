@@ -9,7 +9,8 @@ module.exports = {
   mode: "development",
   devtool: "source-map",
   externals: {
-    "2d-engine": "TwoDeeEngine"
+    "2d-engine": "TwoDeeEngine",
+    "jquery": "jQuery"
   },
   module: {
     rules: [

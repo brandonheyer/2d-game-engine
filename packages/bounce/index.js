@@ -2,52 +2,59 @@ import $ from 'jquery';
 import { TwoEngine, random, seedrandom } from '2d-engine';
 
 import BallEntity from './ball-entity';
+import BaseBallEntity from './base-ball-entity';
 
-const STARTING_COUNT = 500;
+export function addBalls(engine, count = STARTING_COUNT) {
+  engine.randomXPos = random.clone(seedrandom("bounce-pos-x"))
+    .uniformInt(0, engine.xMax);
+  engine.randomYPos = random.clone(seedrandom("bounce-pos-y"))
+    .uniformInt(0, engine.yMax);
 
-const engine = new TwoEngine(
-  '.canvas',
-  700, 700,
-  1000, 1000
-);
+  for (let i = 0; i < STARTING_COUNT; i++) {
+    const entity = new BallEntity({
+      engine: engine
+    });
 
-window.random = random;
-window.seedrandom = seedrandom;
+    entity.index = i;
+    entity.entities = engine.entities;
+    entity.engine = engine;
 
-engine.randomXPos = random.clone(seedrandom("bounce-pos-x"))
-  .uniformInt(0, engine.xMax);
-engine.randomYPos = random.clone(seedrandom("bounce-pos-y"))
-  .uniformInt(0, engine.yMax);
-
-for (let i = 0; i < STARTING_COUNT; i++) {
-  const entity = new BallEntity({
-    engine: engine
-  });
-
-  entity.index = i;
-  entity.entities = engine.entities;
-  entity.engine = engine;
-
-  engine.addEntity(entity);
+    engine.addEntity(entity);
+  }
 }
 
-let iterations = 0;
-let logTime = 0;
-const oldTick = engine.tick.bind(engine);
+export {
+  BallEntity,
+  BaseBallEntity
+};
 
+export function demo() {
+  const STARTING_COUNT = 250;
 
+  const engine = new TwoEngine(
+    '.canvas',
+    700, 700,
+    1000, 1000
+  );
 
-// engine.tick = function() {
-//   iterations++;
-//
-//   if (iterations > 500) {
-//     console.profileEnd();
-//     engine.tick = oldTick;
-//   }
-//
-//   return oldTick();
-// }
+  addBalls(engine);
 
-// console.profile();
+  // let iterations = 0;
+  // let logTime = 0;
+  // const oldTick = engine.tick.bind(engine);
+  //
+  // engine.tick = function() {
+  //   iterations++;
+  //
+  //   if (iterations > 500) {
+  //     console.profileEnd();
+  //     engine.tick = oldTick;
+  //   }
+  //
+  //   return oldTick();
+  // }
 
-engine.start();
+  // console.profile();
+
+  engine.start();
+}

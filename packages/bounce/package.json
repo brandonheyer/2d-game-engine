@@ -8,14 +8,14 @@
     "name": "Brandon Heyer",
     "email": "brandonheyer@gmail.com"
   },
-  "private": true,
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/brandonheyer/2d-engine/issues"
   },
   "homepage": "https://github.com/brandonheyer/2d-engine#readme",
   "peerDependencies": {
-    "2d-engine": "*"
+    "2d-engine": "*",
+    "jquery": "^3.4.1"
   },
   "scripts": {}
 }
