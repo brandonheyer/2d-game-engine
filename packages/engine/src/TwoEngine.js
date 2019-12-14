@@ -18,7 +18,7 @@ export default class TwoEngine extends Engine {
     this.canvas = new Two({
       width: pixelX,
       height: pixelY,
-      type: Two.Types.svg
+      type: Two.Types.canvas
     });
 
     this.canvas.appendTo(parent);
