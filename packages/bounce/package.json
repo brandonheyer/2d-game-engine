@@ -1,6 +1,6 @@
 {
   "name": "@2d-engine/bounce",
-  "version": "1.0.0",
+  "version": "5.3.0",
   "description": "A bounce example for 2d-engine",
   "repository": {},
   "keywords": [],
@@ -14,7 +14,6 @@
     "url": "https://github.com/brandonheyer/2d-engine/issues"
   },
   "homepage": "https://github.com/brandonheyer/2d-engine#readme",
-  "dependencies": {},
   "peerDependencies": {
     "2d-engine": "*"
   },

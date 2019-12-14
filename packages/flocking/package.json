@@ -1,22 +1,21 @@
 {
   "name": "flocking",
-  "version": "1.0.0",
+  "version": "5.3.0",
   "description": "",
   "main": "index.js",
   "author": "",
   "license": "ISC",
-  "dependencies": {},
   "private": true,
   "devDependencies": {
-    "2d-engine": "*",
+    "2d-engine": "^5.3.0",
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "babel-loader": "^8.0.6",
     "d3": "^5.9.2",
-    "webpack": "^4.32.2",
-    "webpack-cli": "^3.3.2",
     "prismjs": "^1.6.0",
-    "showdown": "^1.7.1"
+    "showdown": "^1.7.1",
+    "webpack": "^4.32.2",
+    "webpack-cli": "^3.3.2"
   }
 }

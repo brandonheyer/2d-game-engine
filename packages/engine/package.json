@@ -1,6 +1,6 @@
 {
   "name": "2d-engine",
-  "version": "0.5.2",
+  "version": "5.3.0",
   "description": "A game engine in two using D3 and writtin in ES6",
   "main": "src/index",
   "repository": {
@@ -25,7 +25,6 @@
     "url": "https://github.com/brandonheyer/2d-engine/issues"
   },
   "homepage": "https://github.com/brandonheyer/2d-engine#readme",
-  "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",

@@ -1,6 +1,6 @@
 {
   "name": "2d-spirograph",
-  "version": "1.0.4",
+  "version": "5.3.0",
   "description": "",
   "main": "index.js",
   "private": true,
@@ -9,9 +9,8 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {},
   "devDependencies": {
-    "2d-engine": "*",
+    "2d-engine": "^5.3.0",
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
