@@ -2,7 +2,7 @@
   "name": "2d-engine",
   "version": "5.3.3",
   "description": "An ES6 game engine using two.js",
-  "main": "src/index",
+  "main": "dist/2d-engine.min.js",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/brandonheyer/2d-engine.git"

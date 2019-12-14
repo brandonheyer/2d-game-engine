@@ -12,6 +12,7 @@
   "bugs": {
     "url": "https://github.com/brandonheyer/2d-engine/issues"
   },
+  "main": "./dist/index.min.js",
   "homepage": "https://github.com/brandonheyer/2d-engine#readme",
   "peerDependencies": {
     "2d-engine": "*",
