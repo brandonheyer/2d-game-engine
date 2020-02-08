@@ -5,7 +5,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.min.js',
-    libraryTarget: "umd"
+    libraryTarget: 'umd'
   },
   mode: "production",
   devtool: "source-map",
@@ -16,12 +16,6 @@ module.exports = {
         commonjs: "2d-engine",
         commonjs2: "2d-engine",
         amd: "2d-engine"
-      },
-      "jquery": {
-        root: "jQuery",
-        commonjs: "jquery",
-        commonjs2: "jquery",
-        amd: "jquery"
       }
     }
   ],

@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { TwoEngine, random, seedrandom } from '2d-engine';
 
 import BallEntity from './ball-entity';
