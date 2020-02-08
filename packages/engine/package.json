@@ -3,7 +3,7 @@
   "version": "5.4.1",
   "description": "An ES6 game engine using two.js",
   "main": "./dist/2d-engine.min.js",
-  "module": "./sroc/index",
+  "module": "./src/index",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/brandonheyer/2d-engine.git"
