@@ -5,9 +5,11 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '2d-engine.min.js',
-    library: "TwoDeeEngine"
+    library: "TwoDeeEngine",
+    libraryTarget: "umd"
   },
-  mode: "development",
+  externals: {},
+  mode: "production",
   devtool: "source-map",
   module: {
     rules: [

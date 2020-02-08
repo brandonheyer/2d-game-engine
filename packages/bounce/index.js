@@ -4,6 +4,8 @@ import { TwoEngine, random, seedrandom } from '2d-engine';
 import BallEntity from './ball-entity';
 import BaseBallEntity from './base-ball-entity';
 
+const STARTING_COUNT = 250;
+
 export function addBalls(engine, count = STARTING_COUNT) {
   engine.randomXPos = random.clone(seedrandom("bounce-pos-x"))
     .uniformInt(0, engine.xMax);
@@ -29,8 +31,6 @@ export {
 };
 
 export function demo() {
-  const STARTING_COUNT = 250;
-
   const engine = new TwoEngine(
     '.canvas',
     700, 700,

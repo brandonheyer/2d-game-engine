@@ -18,6 +18,7 @@
     "2d-engine": "*",
     "jquery": "^3.4.1"
   },
+  "module": "./src/index.js",
   "scripts": {
     "prepare": "webpack-cli"
   },
