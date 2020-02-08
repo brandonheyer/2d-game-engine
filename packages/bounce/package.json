@@ -18,7 +18,7 @@
   "peerDependencies": {
     "2d-engine": ">= 5.4.2"
   },
-  "devDependencies": {
+  "dependencies": {
     "2d-engine": "^5.4.2"
   },
   "scripts": {

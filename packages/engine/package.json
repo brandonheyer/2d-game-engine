@@ -25,7 +25,7 @@
     "url": "https://github.com/brandonheyer/2d-engine/issues"
   },
   "homepage": "https://github.com/brandonheyer/2d-engine#readme",
-  "devDependencies": {
+  "dependencies": {
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
