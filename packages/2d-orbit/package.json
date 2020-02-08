@@ -1,8 +1,8 @@
 {
   "name": "2d-orbit",
-  "version": "5.4.2",
+  "version": "5.4.4",
   "devDependencies": {
-    "2d-engine": "^5.4.2",
+    "2d-engine": "^5.4.4",
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
