@@ -16,7 +16,7 @@
   "module": "./index.js",
   "homepage": "https://github.com/brandonheyer/2d-engine#readme",
   "peerDependencies": {
-    "2d-engine": ">= 5.4.2",
+    "2d-engine": ">= 5.4.2"
   },
   "devDependencies": {
     "2d-engine": "^5.4.2"
