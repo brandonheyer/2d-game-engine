@@ -1,6 +1,6 @@
 {
   "name": "2d-engine-bounce",
-  "version": "5.4.6",
+  "version": "5.4.7",
   "description": "A bounce example for 2d-engine",
   "repository": {},
   "keywords": [],
@@ -19,7 +19,7 @@
     "2d-engine": ">= 5.4.2"
   },
   "dependencies": {
-    "2d-engine": "^5.4.4"
+    "2d-engine": "^5.4.7"
   },
   "scripts": {
     "prepare": "webpack-cli"
