@@ -13,12 +13,14 @@ export default class BallEntity extends BaseBallEntity {
   initializeProperties(options) {
     initKillWhenStable(this);
 
+    this.ballAbsorbtion = options.ballAbsorbtion || .9;
+
     super.initializeProperties(options);
   }
 
   onCollision(other, normalizedVector, magnitude) {
     separation(this, other, normalizedVector, magnitude);
-    bounce(this, other, normalizedVector);
+    bounce(this, other, normalizedVector, this.ballAbsorbtion);
   }
 
   preUpdatePosition(delta) {
