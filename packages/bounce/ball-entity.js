@@ -14,6 +14,8 @@ export default class BallEntity extends BaseBallEntity {
     initKillWhenStable(this);
 
     this.ballAbsorbtion = options.ballAbsorbtion || .9;
+    this.wallAbsorbtion = options.wallAbsorbtion || .98;
+    this.gravity = options.gravity = 9.8; 
 
     super.initializeProperties(options);
   }
@@ -24,11 +26,11 @@ export default class BallEntity extends BaseBallEntity {
   }
 
   preUpdatePosition(delta) {
-    gravity(this, delta);
+    gravity(this, delta, this.gravity);
   }
 
   postUpdatePosition() {
-    boundaryReflect(this);
+    boundaryReflect(this, this.wallAbsorbtion);
     killWhenStable(this);
   }
 }

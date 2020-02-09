@@ -1,30 +1,11 @@
 import { TwoEngine, random, seedrandom } from '2d-engine';
 
+import addBalls from "./add-balls";
 import BallEntity from './ball-entity';
 import BaseBallEntity from './base-ball-entity';
 
-const STARTING_COUNT = 250;
-
-export function addBalls(engine, count = STARTING_COUNT) {
-  engine.randomXPos = random.clone(seedrandom("bounce-pos-x"))
-    .uniformInt(0, engine.xMax);
-  engine.randomYPos = random.clone(seedrandom("bounce-pos-y"))
-    .uniformInt(0, engine.yMax);
-
-  for (let i = 0; i < STARTING_COUNT; i++) {
-    const entity = new BallEntity({
-      engine: engine
-    });
-
-    entity.index = i;
-    entity.entities = engine.entities;
-    entity.engine = engine;
-
-    engine.addEntity(entity);
-  }
-}
-
 export {
+  addBalls,
   BallEntity,
   BaseBallEntity
 };
@@ -38,22 +19,7 @@ export function demo() {
 
   addBalls(engine);
 
-  // let iterations = 0;
-  // let logTime = 0;
-  // const oldTick = engine.tick.bind(engine);
-  //
-  // engine.tick = function() {
-  //   iterations++;
-  //
-  //   if (iterations > 500) {
-  //     console.profileEnd();
-  //     engine.tick = oldTick;
-  //   }
-  //
-  //   return oldTick();
-  // }
-
-  // console.profile();
-
   engine.start();
 }
+
+(() => window && (window.bounce = demo))();
