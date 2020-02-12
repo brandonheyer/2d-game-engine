@@ -99,7 +99,7 @@ export default class PlanetEntity extends BaseEntity {
   renderDensity() {
     this.planetElement.fill = d3.interpolateViridis(SCALE(this.density));
     this.radius = Math.sqrt(this.mass / (this.density * Math.PI)) * 10;
-    this.element.scale = this.radius / this.baseRadius;
+    // this.element.scale = this.radius / this.baseRadius;
   }
 
   enableReporting() {

@@ -6,7 +6,7 @@ import BasicBoid from './entities/BasicBoid';
 import EducationalBoid from './entities/EducationalBoid';
 
 const defaultParams = params = {
-  boids: 200,
+  boids: 100,
 
   radius1: 25,
   radius2: 25,
@@ -16,8 +16,8 @@ const defaultParams = params = {
   speed2: 25,
   speedSteps: 1,
 
-  range1: 200,
-  range2: 200,
+  range1: 10000,
+  range2: 10000,
   rangeSteps: 1,
 
   aw: 1,
@@ -156,9 +156,7 @@ function updateParams() {
   updateEntityOptions();
 
   engine.entities.forEach(function(entity) {
-    entity.initializeProperties(
-      _.omit(entityOptions, ['initialize'])
-    );
+    entity.initializeProperties(entityOptions, true);
 
     if (engine.running) {
       entity.render(engine.canvas);
@@ -174,7 +172,7 @@ var height = $('body').height();
 engine = new Engine(
   '.fk-canvas',
   width, height,
-  width * 1, height * 1,
+  width * 2, height * 2,
   {
     trackFPS: true,
     displayFPS: $('.fk-fps')

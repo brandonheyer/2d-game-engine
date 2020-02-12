@@ -21,6 +21,8 @@ AppEngine.addSun = function() {
     engine
   });
 
+  engine.zoomEnabled = false;
+
   engine.addEntity(entity);
   engine.sun = entity;
 };
@@ -29,7 +31,7 @@ AppEngine.initialize = function(width, height) {
   const e = new UniverseEngine(
     '.canvas',
     width, height,
-    (width * 16000) / height, 16000,
+    (width * 10000) / height, 10000,
     {
       trackFPS: true,
       displayFPS: $('.fps')

@@ -13,6 +13,7 @@
     "@babel/preset-env": "^7.4.5",
     "babel-loader": "^8.0.6",
     "d3": "^5.9.2",
+    "jquery": "^3.4.1",
     "prismjs": "^1.6.0",
     "showdown": "^1.7.1",
     "webpack": "^4.32.2",

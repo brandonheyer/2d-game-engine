@@ -46,14 +46,15 @@ class BaseBoid extends BaseEntity {
     );
   }
 
-  initializeProperties(options) {
+  initializeProperties(options, isUpdate = false) {
     options = options || {};
+
+    if (!isUpdate) {
+      super.initializeProperties(options);
+    }
 
     this.range = options.range || this.xScale.domain()[1];
     this.rangeSq = this.range * this.range;
-
-    this.xMax = this.xScale.domain()[1];
-    this.yMax = this.yScale.domain()[1];
 
     this.alignmentWeight = options.alignmentWeight;
     this.groupAlignmentWeight = options.groupAlignmentWeight;
@@ -63,12 +64,6 @@ class BaseBoid extends BaseEntity {
 
     this.separationWeight = options.separationWeight;
     this.groupSeparationWeight = options.groupSeparationWeight;
-
-    if (options.initialize) {
-      options.initialize.bind(this)();
-    }
-
-    this.renderMethod = options.render;
   }
 
   initializeVectors(length) {

@@ -41,7 +41,7 @@ export default class UniverseEngine extends TwoEngine {
               headingX: xHeading * (1 + Generator.random(-.1, .1, 5)),
               headingY: yHeading * (1 + Generator.random(-.1, .1, 5)),
               density: Generator.random(5, 100, 2),
-              mass: Math.random() < .1 ? Generator.random(500000, 1000000, 0) : Generator.random(50, 2500, 0),
+              mass: Math.random() < .1 ? Generator.random(500000, 1000000, 0) : Generator.random(500, 10000, 0),
               engine: context
             });
           }
@@ -62,8 +62,8 @@ export default class UniverseEngine extends TwoEngine {
               yPos: yStart,
               headingX: xHeading * (1 + Generator.random(-.1, .1, 5)),
               headingY: yHeading * (1 + Generator.random(-.1, .1, 5)),
-              density: Generator.random(10, 25, 2),
-              mass: Generator.random(100, 500, 0),
+              density: Generator.random(100, 250, 2),
+              mass: Generator.random(5000, 25000, 0),
               engine: context
             });
           }
