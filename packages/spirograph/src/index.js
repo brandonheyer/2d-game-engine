@@ -69,7 +69,8 @@ firstAnchor = new Anchor({
   startingPosition: new Point(settings.x1, settings.y1),
   radius: settings.radius1,
   offset: settings.offset1,
-  speed: settings.speed1
+  speed: settings.speed1,
+  engine: engine
 });
 engine.addAnchorEntity(firstAnchor);
 
@@ -79,7 +80,8 @@ secondAnchor = new Anchor({
   startingPosition: new Point(settings.x2, settings.y2),
   radius: settings.radius2,
   offset: settings.offset2,
-  speed: settings.speed2
+  speed: settings.speed2,
+  engine: engine
 });
 engine.addAnchorEntity(secondAnchor);
 
@@ -90,7 +92,8 @@ drawPoint = new DrawPoint({
     ((settings.x2 - settings.x1) / 2),
     engine.yScale.domain()[1] * .8
   ),
-  speed: settings.rotationSpeed
+  speed: settings.rotationSpeed,
+  engine: engine
 });
 engine.addDrawEntity(drawPoint);
 
