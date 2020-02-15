@@ -1,3 +1,5 @@
+import random from "random";
+import seedrandom from "seedrandom";
 import $ from 'jquery';
 import * as d3 from 'd3';
 import _ from 'lodash';
@@ -73,6 +75,12 @@ export default class Engine {
     } else {
       this.liveTrackFPS = function() {};
     }
+
+    this.randomXPos = random.clone(seedrandom("bounce-pos-x"))
+      .uniformInt(0, this.xMax);
+
+    this.randomYPos = random.clone(seedrandom("bounce-pos-y"))
+      .uniformInt(0, this.yMax);
 
     this.initializeKeyboardEvents();
     this.initializeScroll();

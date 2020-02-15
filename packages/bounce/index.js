@@ -2,12 +2,10 @@ import { TwoEngine, random, seedrandom } from '2d-engine';
 
 import addBalls from "./add-balls";
 import BallEntity from './ball-entity';
-import BaseBallEntity from './base-ball-entity';
 
 export {
   addBalls,
-  BallEntity,
-  BaseBallEntity
+  BallEntity
 };
 
 export function demo() {

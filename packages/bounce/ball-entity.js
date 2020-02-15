@@ -4,20 +4,35 @@ import {
   boundaryReflect,
   gravity,
   initKillWhenStable,
-  killWhenStable
+  killWhenStable,
+  BaseEntity,
+  random,
+  seedrandom
 } from "2d-engine";
 
-import BaseBallEntity from "./base-ball-entity";
+const BALL_RADIUS_MIN = 2;
+const BALL_RADIUS_MAX = 20;
+const BALL_RADIUS_RANGE = BALL_RADIUS_MAX - BALL_RADIUS_MIN;
 
-export default class BallEntity extends BaseBallEntity {
+const rng = random.clone(seedrandom("ball-entity"));
+const rngRadius = rng.uniformInt(BALL_RADIUS_MIN, Math.max(BALL_RADIUS_RANGE, 1));
+
+export default class BallEntity extends BaseEntity {
   initializeProperties(options) {
     initKillWhenStable(this);
 
-    this.ballAbsorbtion = options.ballAbsorbtion || .9;
-    this.wallAbsorbtion = options.wallAbsorbtion || .98;
-    this.gravity = options.gravity = 9.8; 
+    options.randomStart = true;
+    options.update = "advanced";
 
     super.initializeProperties(options);
+
+    this.ballAbsorbtion = options.ballAbsorbtion || .9;
+    this.wallAbsorbtion = options.wallAbsorbtion || .98;
+    this.gravity = options.gravity = 9.8;
+
+    this.dead = false;
+    this.radius = options.radius || rngRadius();
+    this.mass = this.radius;
   }
 
   onCollision(other, normalizedVector, magnitude) {
@@ -26,11 +41,30 @@ export default class BallEntity extends BaseBallEntity {
   }
 
   preUpdatePosition(delta) {
+    super.preUpdatePosition(delta);
+
     gravity(this, delta, this.gravity);
   }
 
-  postUpdatePosition() {
+  updatePosition(delta) {
+    this.pos.plusEquals(this.heading);
+  }
+
+  postUpdatePosition(delta) {
     boundaryReflect(this, this.wallAbsorbtion);
     killWhenStable(this);
+
+    super.postUpdatePosition(delta);
+  }
+
+  render(canvas) {
+    this.element = canvas.makeCircle(
+      this.xScale(this.pos.x),
+      this.yScale(this.pos.y),
+      this.xScale(this.radius)
+    );
+
+    this.element.fill = "#8C8880";
+    this.element.stroke = "none";
   }
 }
