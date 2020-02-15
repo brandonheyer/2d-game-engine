@@ -1,6 +1,6 @@
 {
   "name": "2d-engine",
-  "version": "5.4.7",
+  "version": "5.4.8",
   "description": "An ES6 game engine using two.js",
   "main": "./dist/2d-engine.min.js",
   "module": "./src/index",
