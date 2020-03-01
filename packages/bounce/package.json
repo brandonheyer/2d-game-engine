@@ -24,5 +24,5 @@
   "scripts": {
     "prepare": "webpack-cli"
   },
-  "gitHead": "b91bfe1c3ed8e17079c491911465e94e3bc80d39"
+  "gitHead": "e156541f55572050fbcd23d5ca8d18601e651e27"
 }

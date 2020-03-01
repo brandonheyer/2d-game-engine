@@ -92,5 +92,6 @@
       "es6": true,
       "mocha": true
     }
-  }
+  },
+  "gitHead": "e156541f55572050fbcd23d5ca8d18601e651e27"
 }

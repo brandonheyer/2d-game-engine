@@ -11,7 +11,7 @@ import XYPair from './XYPair';
 
 import separation from "./forces/separation";
 import bounce from "./forces/bounce";
-import bounceAlt from "./forces/bonce-alternative";
+import bounceAlt from "./forces/bounce-alternative";
 import boundaryReflect from "./forces/boundary-reflect";
 import gravity from "./forces/gravity";
 import { initKillWhenStable, killWhenStable } from "./forces/kill-when-stable";
