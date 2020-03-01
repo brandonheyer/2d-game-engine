@@ -142,8 +142,8 @@ export default class BaseEntity {
   }
 
   updateWithOther(delta, other) {
-    this.tempVector.x = this.pos.x - other.pos.x;
-    this.tempVector.y = this.pos.y - other.pos.y;
+    this.tempVector.x = other.pos.x - this.pos.x;
+    this.tempVector.y = other.pos.y - this.pos.y;
 
     this.magnitudeSq = this.tempVector.magnitudeSq();
     this.minDistance = this.radius + other.radius;
@@ -155,7 +155,7 @@ export default class BaseEntity {
       this.normalizedVector.x = this.tempVector.x / this.magnitude;
       this.normalizedVector.y = this.tempVector.y / this.magnitude;
 
-      this.onCollision(other, this.normalizedVector, this.magnitude);
+      other.onCollision(this, this.normalizedVector, this.magnitude);
     }
   }
 

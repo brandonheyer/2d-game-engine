@@ -35,13 +35,13 @@ function bounce(a, b, force, absorbtion = BOUNCE_ABSORPTION_BALL) {
   aVelocityScalar = (
     aDot *
     (a.mass - b.mass) +
-    2 * b.mass * bDot
+    (2 * b.mass * bDot)
   ) / (a.mass + b.mass);
 
   bVelocityScalar = (
     bDot *
     (b.mass - a.mass) +
-    2 * a.mass * aDot
+    (2 * a.mass * aDot)
   ) / (a.mass + b.mass);
 
   aVelocity.x = force.x * aVelocityScalar;
