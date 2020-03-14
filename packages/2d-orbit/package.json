@@ -7,7 +7,7 @@
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
-    "acorn": "^6.1.1",
+    "acorn": "^6.4.1",
     "babel-loader": "^8.0.6",
     "css-loader": "^2.1.1",
     "d3": "^5.9.2",
