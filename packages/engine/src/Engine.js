@@ -12,7 +12,7 @@ const SUPPORT_OFFSET = window.pageYOffset !== undefined;
  */
 export default class Engine {
   constructor(canvasClass, pixelX, pixelY, worldX, worldY, options) {
-    options = options || {};
+    this.options = options = options || {};
 
     this.events = new Events();
     this.on = this.events.on.bind(this.events);
@@ -189,6 +189,7 @@ export default class Engine {
    */
   addEntity(entity) {
     this.entities.push(entity);
+    entity.engine = this;
 
     this.emit('entities:change', this.entities.length);
 

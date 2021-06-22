@@ -14,6 +14,7 @@ import bounce from "./forces/bounce";
 import bounceAlt from "./forces/bounce-alternative";
 import boundaryReflect from "./forces/boundary-reflect";
 import gravity from "./forces/gravity";
+import universalGravitation from "./forces/universal-gravitation";
 import { initKillWhenStable, killWhenStable } from "./forces/kill-when-stable";
 
 import seedrandom from "seedrandom";
@@ -36,6 +37,7 @@ export {
   bounceAlt,
   boundaryReflect,
   gravity,
+  universalGravitation,
 
   initKillWhenStable,
   killWhenStable,
