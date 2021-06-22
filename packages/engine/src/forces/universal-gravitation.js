@@ -29,9 +29,7 @@ const universalGravitation = {
   updatePosition: (a, delta) => {
     a.heading.x += a.forceVector.x / a.mass;
     a.heading.y += a.forceVector.y / a.mass;
-    a.pos.scalePlusEquals(delta, this.heading);
-
-    console.log(a.pos);
+    a.pos.scalePlusEquals(delta, a.heading);
   }
 }
 
